@@ -1,7 +1,7 @@
 // Peds Emergency Reference — Service Worker
 // Caches all app files on first load, serves from cache when offline
 
-const CACHE_NAME = 'peds-ref-v1';
+const CACHE_NAME = 'peds-ref-v2';
 const FILES_TO_CACHE = [
   './',
   './peds-emergency-ref.html',
