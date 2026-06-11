@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Peds Emergency Reference</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #2a3a55;
+    --text: #e8edf5;
+    --muted: #7a8fa8;
+    --accent: #00c2a8;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --blue: #3b82f6;
+    --green: #22c55e;
+    --purple: #a855f7;
+    --font-mono: 'Courier New', monospace;
+    --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    min-height: 100vh;
+    padding-bottom: 2rem;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 2px solid var(--accent);
+    padding: 1rem 1.25rem 0.75rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-title {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-end;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 1;
+  }
+
+  .input-group label {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .input-group input, .input-group select {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    font-size: 1.1rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    width: 100%;
+    -webkit-appearance: none;
+  }
+
+  .input-group input:focus, .input-group select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .calc-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.55rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    height: fit-content;
+    align-self: flex-end;
+  }
+
+  .disclaimer {
+    font-size: 0.6rem;
+    color: var(--danger);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 0.6rem;
+    font-weight: 600;
+  }
+
+  main {
+    padding: 1rem 1rem 0;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+  }
+
+  .empty-state .big-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.4;
+  }
+
+  .empty-state p {
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .patient-banner {
+    background: var(--surface2);
+    border: 1.5px solid var(--accent);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .patient-stat {
+    text-align: center;
+  }
+
+  .patient-stat .val {
+    font-size: 1.3rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: var(--accent);
+  }
+
+  .patient-stat .lbl {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.1rem;
+  }
+
+  .broselow-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .section {
+    margin-bottom: 1rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    background: var(--surface2);
+    border-radius: 6px 6px 0 0;
+    border: 1.5px solid var(--border);
+    border-bottom: none;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .section-header .section-icon {
+    font-size: 1rem;
+  }
+
+  .section-header .section-title {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .section-header .chevron {
+    color: var(--muted);
+    font-size: 0.8rem;
+    transition: transform 0.2s;
+  }
+
+  .section-header.open .chevron {
+    transform: rotate(180deg);
+  }
+
+  .section-body {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    overflow: hidden;
+  }
+
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+    gap: 1rem;
+  }
+
+  .data-row:last-child { border-bottom: none; }
+
+  .data-row.highlight {
+    background: rgba(0, 194, 168, 0.07);
+  }
+
+  .data-row.warn-row {
+    background: rgba(245, 158, 11, 0.07);
+  }
+
+  .row-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.3;
+    flex: 1;
+  }
+
+  .row-label .sublabel {
+    font-size: 0.65rem;
+    color: #4a5f78;
+    display: block;
+    margin-top: 0.15rem;
+  }
+
+  .row-value {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .row-value .unit {
+    font-size: 0.65rem;
+    color: var(--muted);
+    font-weight: 400;
+    margin-left: 0.2rem;
+  }
+
+  .row-value.accent { color: var(--accent); }
+  .row-value.warn { color: var(--warn); }
+  .row-value.danger { color: var(--danger); }
+  .row-value.blue { color: var(--blue); }
+  .row-value.green { color: var(--green); }
+  .row-value.purple { color: var(--purple); }
+
+  .sub-header {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    padding: 0.5rem 0.9rem 0.3rem;
+    background: rgba(0,194,168,0.05);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .range-bar-wrap {
+    margin: 0.5rem 0 0.3rem;
+  }
+
+  .range-label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .range-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right, var(--green), var(--warn), var(--danger));
+    position: relative;
+  }
+
+  .range-marker {
+    position: absolute;
+    top: -3px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--accent);
+    transform: translateX(-50%);
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+  }
+
+  .tab {
+    flex: 1;
+    padding: 0.7rem 0.5rem;
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: var(--surface);
+    color: var(--muted);
+    border: none;
+    border-right: 1px solid var(--border);
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .tab:last-child { border-right: none; }
+
+  .tab.active {
+    background: var(--accent);
+    color: #000;
+  }
+
+  .note-box {
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 6px;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.72rem;
+    color: var(--warn);
+    line-height: 1.5;
+    margin: 0.75rem 0;
+  }
+
+  .note-box strong { font-weight: 700; }
+
+  .sources {
+    padding: 1rem;
+    font-size: 0.62rem;
+    color: #3a4f6a;
+    line-height: 1.7;
+    border-top: 1px solid var(--border);
+    margin-top: 1rem;
+  }
+
+  .sources strong { color: var(--muted); display: block; margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-title">⚡ Peds Emergency Reference</div>
+  <div class="input-row">
+    <div class="input-group">
+      <label>Weight (kg)</label>
+      <input type="number" id="weight" placeholder="e.g. 15" min="0.5" max="80" step="0.1" inputmode="decimal">
+    </div>
+    <div class="input-group">
+      <label>Age</label>
+      <select id="age">
+        <option value="">Select</option>
+        <option value="neonate">Neonate (0–28d)</option>
+        <option value="infant1">Infant 1–3 mo</option>
+        <option value="infant2">Infant 4–6 mo</option>
+        <option value="infant3">Infant 7–12 mo</option>
+        <option value="toddler1">Toddler 1–2 yr</option>
+        <option value="toddler2">Toddler 2–3 yr</option>
+        <option value="preschool">Preschool 3–5 yr</option>
+        <option value="school1">School 6–8 yr</option>
+        <option value="school2">School 9–11 yr</option>
+        <option value="preteen">Preteen 12–14 yr</option>
+      </select>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Go</button>
+  </div>
+  <div class="disclaimer">⚠ Verify all values. Not a substitute for clinical judgment.</div>
+</header>
+
+<main id="main-content">
+  <div class="empty-state" id="empty">
+    <div class="big-icon">🏥</div>
+    <p>Enter weight and age above,<br>then tap <strong>Go</strong> to generate<br>intubation and code blue parameters.</p>
+  </div>
+</main>
+
+<script>
+// ─── DATA TABLES ─────────────────────────────────────────────────────────────
+// All formulas and ranges per PALS 2020, Broselow-Luten, AAP, Roberts & Hedges
+
+const BROSELOW = [
+  { maxKg: 5,   color: 'GRAY',   hex: '#9ca3af', text: '#000' },
+  { maxKg: 7,   color: 'PINK',   hex: '#f9a8d4', text: '#000' },
+  { maxKg: 9,   color: 'RED',    hex: '#ef4444', text: '#fff' },
+  { maxKg: 11,  color: 'PURPLE', hex: '#a855f7', text: '#fff' },
+  { maxKg: 14,  color: 'YELLOW', hex: '#facc15', text: '#000' },
+  { maxKg: 18,  color: 'WHITE',  hex: '#f3f4f6', text: '#000' },
+  { maxKg: 23,  color: 'BLUE',   hex: '#3b82f6', text: '#fff' },
+  { maxKg: 29,  color: 'ORANGE', hex: '#f97316', text: '#fff' },
+  { maxKg: 36,  color: 'GREEN',  hex: '#22c55e', text: '#000' },
+  { maxKg: 999, color: 'ADULT',  hex: '#475569', text: '#fff' },
+];
+
+const VITALS = {
+  neonate:   { hr: '100–160', sbp: '60–90',  rr: '40–60' },
+  infant1:   { hr: '100–160', sbp: '70–100', rr: '30–50' },
+  infant2:   { hr: '100–150', sbp: '70–100', rr: '30–40' },
+  infant3:   { hr: '100–150', sbp: '70–100', rr: '25–35' },
+  toddler1:  { hr: '90–150',  sbp: '80–110', rr: '20–30' },
+  toddler2:  { hr: '80–130',  sbp: '80–110', rr: '20–30' },
+  preschool: { hr: '80–120',  sbp: '85–110', rr: '20–25' },
+  school1:   { hr: '70–110',  sbp: '90–120', rr: '15–20' },
+  school2:   { hr: '60–100',  sbp: '95–120', rr: '15–20' },
+  preteen:   { hr: '60–100',  sbp: '100–125',rr: '12–18' },
+};
+
+function getBroselow(kg) {
+  for (const b of BROSELOW) if (kg <= b.maxKg) return b;
+  return BROSELOW[BROSELOW.length - 1];
+}
+
+function r(val, dec = 1) {
+  return Math.round(val * Math.pow(10, dec)) / Math.pow(10, dec);
+}
+
+function calculate() {
+  const weight = parseFloat(document.getElementById('weight').value);
+  const age = document.getElementById('age').value;
+
+  if (!weight || weight < 0.5 || weight > 80) {
+    alert('Please enter a weight between 0.5 and 80 kg.');
+    return;
+  }
+  if (!age) {
+    alert('Please select an age range.');
+    return;
+  }
+
+  const kg = weight;
+  const brow = getBroselow(kg);
+  const vitals = VITALS[age];
+
+  // ── INTUBATION ────────────────────────────────────────────────────────────
+  // ETT size (uncuffed): (age/4) + 4  |  Cuffed: (age/4) + 3.5
+  // We derive approximate age midpoint for formula use
+  const ageMidMap = {
+    neonate: 0, infant1: 0.16, infant2: 0.4, infant3: 0.75,
+    toddler1: 1.5, toddler2: 2.5, preschool: 4, school1: 7,
+    school2: 10, preteen: 13
+  };
+  const ageYr = ageMidMap[age];
+
+  let ettUncuffed, ettCuffed, bladeSize, bladeType, lipDepth;
+
+  if (age === 'neonate') {
+    ettUncuffed = kg < 1 ? 2.5 : kg < 2 ? 3.0 : 3.0;
+    ettCuffed = 'N/A';
+    bladeSize = 0;
+    bladeType = 'Miller (straight)';
+    lipDepth = r(kg + 6, 0);
+  } else if (['infant1','infant2','infant3'].includes(age)) {
+    ettUncuffed = 3.5;
+    ettCuffed = 3.0;
+    bladeSize = 1;
+    bladeType = 'Miller (straight)';
+    lipDepth = r(kg + 6, 0);
+  } else {
+    ettUncuffed = r((ageYr / 4) + 4, 0.5);
+    ettCuffed = r((ageYr / 4) + 3.5, 0.5);
+    bladeSize = ageYr < 6 ? 2 : 3;
+    bladeType = ageYr < 3 ? 'Miller (straight)' : 'Miller or Mac';
+    lipDepth = r(ettUncuffed * 3, 0);
+  }
+
+  // LMA size
+  let lmaSize;
+  if (kg < 5) lmaSize = '1';
+  else if (kg < 10) lmaSize = '1.5';
+  else if (kg < 20) lmaSize = '2';
+  else if (kg < 30) lmaSize = '2.5';
+  else lmaSize = '3';
+
+  // ── RSI MEDICATIONS ───────────────────────────────────────────────────────
+  // Pretreatment: Atropine 0.02 mg/kg (min 0.1 mg, max 0.5 mg)
+  const atropineDose = Math.min(Math.max(r(0.02 * kg, 2), 0.1), 0.5);
+
+  // Ketamine 1–2 mg/kg IV (hemodynamically stable) 
+  const ketamineLo = r(1 * kg, 0);
+  const ketamineHi = r(2 * kg, 0);
+
+  // Etomidate 0.3 mg/kg IV
+  const etomidate = r(0.3 * kg, 1);
+
+  // Succinylcholine: infant/toddler 2 mg/kg, child 1–2 mg/kg, max 150 mg
+  const succDose = age === 'neonate' || ['infant1','infant2','infant3'].includes(age)
+    ? Math.min(r(2 * kg, 0), 150)
+    : Math.min(r(1.5 * kg, 0), 150);
+
+  // Rocuronium 1.2 mg/kg for RSI
+  const roc = r(1.2 * kg, 0);
+
+  // Fentanyl 1–2 mcg/kg IV
+  const fentLo = r(1 * kg, 0);
+  const fentHi = r(2 * kg, 0);
+
+  // Midazolam 0.1 mg/kg IV
+  const midaz = r(0.1 * kg, 1);
+
+  // Propofol 1–2 mg/kg (>3 yr only)
+  const propoLo = r(1 * kg, 0);
+  const propoHi = r(2 * kg, 0);
+
+  // ── CODE BLUE ─────────────────────────────────────────────────────────────
+  // Epi: 0.01 mg/kg IV/IO (0.1 mL/kg of 1:10,000), max 1 mg
+  const epiDose = r(Math.min(0.01 * kg, 1), 3);
+  const epiVol  = r(Math.min(0.1 * kg, 10), 1);  // mL of 1:10,000
+
+  // IO epi if no IV: same dose
+  // Defib: 2 J/kg initial, 4 J/kg subsequent, max 10 J/kg
+  const defibInitial  = r(Math.min(2 * kg, 200), 0);
+  const defibSubseq   = r(Math.min(4 * kg, 360), 0);
+  const defibMax      = r(Math.min(10 * kg, 360), 0);
+
+  // Compression depth: ~1/3 AP diameter
+  // Rate: 100–120 bpm, 30:2 single rescuer, 15:2 two rescuers
+  const compDepthCm = age === 'neonate' ? '~1.5' :
+    ['infant1','infant2','infant3'].includes(age) ? '~4' :
+    ['toddler1','toddler2','preschool'].includes(age) ? '~5' : '~5–6';
+
+  // Adenosine: 0.1 mg/kg rapid IV, max 6 mg; 2nd dose 0.2 mg/kg max 12 mg
+  const adenoDose1 = r(Math.min(0.1 * kg, 6), 2);
+  const adenoDose2 = r(Math.min(0.2 * kg, 12), 2);
+
+  // Amiodarone: 5 mg/kg IV/IO, max 300 mg
+  const amio = r(Math.min(5 * kg, 300), 0);
+
+  // Lidocaine: 1 mg/kg IV/IO max 100 mg
+  const lido = r(Math.min(1 * kg, 100), 0);
+
+  // Bicarb: 1 mEq/kg slow IV
+  const bicarb = r(kg, 0);
+
+  // Calcium gluconate 10%: 60–100 mg/kg IV slow, max 3000 mg
+  const calcGluc = r(Math.min(60 * kg, 3000), 0);
+
+  // Dextrose: 0.5–1 g/kg IV
+  const dextLo = r(0.5 * kg, 0);
+  const dextHi = r(kg, 0);
+  // D25W: 2–4 mL/kg  |  D10W: 5–10 mL/kg
+  const d25Lo = r(2 * kg, 0);
+  const d25Hi = r(4 * kg, 0);
+  const d10Lo = r(5 * kg, 0);
+  const d10Hi = r(10 * kg, 0);
+
+  // Fluid bolus: 10–20 mL/kg NS (septic shock), reassess
+  const fluidLo = r(10 * kg, 0);
+  const fluidHi = r(20 * kg, 0);
+
+  // IO needle size guidance
+  let ioNote;
+  if (kg < 10) ioNote = '15 mm (tibial)';
+  else if (kg < 40) ioNote = '25 mm (tibial / humeral)';
+  else ioNote = '25–45 mm';
+
+  // ── RENDER ────────────────────────────────────────────────────────────────
+  const el = document.getElementById('main-content');
+  el.innerHTML = `
+
+    <div class="patient-banner">
+      <div class="patient-stat">
+        <div class="val">${kg} kg</div>
+        <div class="lbl">Weight</div>
+      </div>
+      <div class="patient-stat">
+        <div class="val">${vitals.hr}</div>
+        <div class="lbl">Target HR</div>
+      </div>
+      <div class="patient-stat">
+        <div class="val">${vitals.sbp}</div>
+        <div class="lbl">Target SBP</div>
+      </div>
+      <div class="patient-stat">
+        <div class="val">${vitals.rr}</div>
+        <div class="lbl">Target RR</div>
+      </div>
+      <div class="broselow-badge" style="background:${brow.hex}; color:${brow.text}">
+        ${brow.color}
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('intub', this)">Intubation</button>
+      <button class="tab" onclick="showTab('rsi', this)">RSI Meds</button>
+      <button class="tab" onclick="showTab('code', this)">Code Blue</button>
+    </div>
+
+    <div id="tab-intub">
+      ${section('🫁', 'Airway Equipment', true, `
+        <div class="data-row highlight">
+          <div class="row-label">ETT Uncuffed<span class="sublabel">(age/4)+4</span></div>
+          <div class="row-value accent">${ettUncuffed} <span class="unit">mm</span></div>
+        </div>
+        <div class="data-row highlight">
+          <div class="row-label">ETT Cuffed<span class="sublabel">(age/4)+3.5</span></div>
+          <div class="row-value accent">${ettCuffed}${ettCuffed !== 'N/A' ? '<span class="unit"> mm</span>' : ''}</div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Lip-to-Tip Depth<span class="sublabel">ETT × 3 (verify CXR)</span></div>
+          <div class="row-value">${lipDepth} <span class="unit">cm at lip</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Blade Size & Type</div>
+          <div class="row-value blue">${bladeSize} — ${bladeType}</div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">LMA Size</div>
+          <div class="row-value">${lmaSize}</div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Suction Catheter<span class="sublabel">ETT (mm) × 2</span></div>
+          <div class="row-value">${ettUncuffed !== 'N/A' ? Math.round(ettUncuffed * 2) : '—'} <span class="unit">Fr</span></div>
+        </div>
+      `)}
+
+      ${section('📏', 'Ventilator Starting Points', false, `
+        <div class="sub-header">Volume-Targeted (if used)</div>
+        <div class="data-row">
+          <div class="row-label">Tidal Volume<span class="sublabel">6–8 mL/kg (lung protective)</span></div>
+          <div class="row-value">${r(6*kg,0)}–${r(8*kg,0)} <span class="unit">mL</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">PEEP Initial</div>
+          <div class="row-value">5 <span class="unit">cmH₂O</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Rate (post-intubation)</div>
+          <div class="row-value">${vitals.rr} <span class="unit">bpm</span></div>
+        </div>
+        <div class="note-box"><strong>Note:</strong> Confirm ETT placement with waveform capnography + bilateral breath sounds + CXR. Adjust vent based on ABG/clinical response.</div>
+      `)}
+    </div>
+
+    <div id="tab-rsi" style="display:none">
+      <div class="note-box"><strong>RSI sequence:</strong> Preoxygenate → Pretreat (if indicated) → Sedate → Paralyze → Intubate. Confirm placement before releasing cricoid pressure.</div>
+
+      ${section('💊', 'Pretreatment', true, `
+        <div class="data-row">
+          <div class="row-label">Atropine<span class="sublabel">0.02 mg/kg IV (min 0.1, max 0.5 mg)<br>Use for infants, bradycardia risk, succinylcholine</span></div>
+          <div class="row-value warn">${atropineDose} <span class="unit">mg IV</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Fentanyl<span class="sublabel">1–2 mcg/kg IV (blunt ICP response)</span></div>
+          <div class="row-value">${fentLo}–${fentHi} <span class="unit">mcg IV</span></div>
+        </div>
+      `)}
+
+      ${section('😴', 'Induction Agents', true, `
+        <div class="data-row highlight">
+          <div class="row-label">Ketamine<span class="sublabel">1–2 mg/kg IV — first-line, hemodynamically neutral</span></div>
+          <div class="row-value accent">${ketamineLo}–${ketamineHi} <span class="unit">mg IV</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Etomidate<span class="sublabel">0.3 mg/kg IV — avoid in adrenal insufficiency</span></div>
+          <div class="row-value">${etomidate} <span class="unit">mg IV</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Propofol<span class="sublabel">1–2 mg/kg IV — avoid if hemodynamically unstable; >3 yr</span></div>
+          <div class="row-value">${propoLo}–${propoHi} <span class="unit">mg IV</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Midazolam<span class="sublabel">0.1 mg/kg IV — less reliable as sole agent</span></div>
+          <div class="row-value">${midaz} <span class="unit">mg IV</span></div>
+        </div>
+      `)}
+
+      ${section('⚡', 'Paralytics', true, `
+        <div class="data-row highlight">
+          <div class="row-label">Succinylcholine<span class="sublabel">${age==='neonate'||['infant1','infant2','infant3'].includes(age)?'2':'1.5'} mg/kg IV — avoid: hyperkalemia, burns, crush, myopathy, glaucoma</span></div>
+          <div class="row-value accent">${succDose} <span class="unit">mg IV (max 150)</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Rocuronium (RSI)<span class="sublabel">1.2 mg/kg IV — use if succinylcholine contraindicated</span></div>
+          <div class="row-value">${roc} <span class="unit">mg IV</span></div>
+        </div>
+      `)}
+    </div>
+
+    <div id="tab-code" style="display:none">
+
+      ${section('🫀', 'CPR Parameters', true, `
+        <div class="data-row highlight">
+          <div class="row-label">Compression Rate</div>
+          <div class="row-value accent">100–120 <span class="unit">bpm</span></div>
+        </div>
+        <div class="data-row highlight">
+          <div class="row-label">Compression Depth</div>
+          <div class="row-value accent">${compDepthCm} <span class="unit">cm</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Ratio (1 rescuer)</div>
+          <div class="row-value">30:2</div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Ratio (2 rescuers)</div>
+          <div class="row-value">15:2</div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Ventilation (with airway)</div>
+          <div class="row-value">Continuous at ${vitals.rr.split('–')[0]} <span class="unit">bpm</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">IO Access<span class="sublabel">If IV not established in 60 sec</span></div>
+          <div class="row-value blue">${ioNote}</div>
+        </div>
+      `)}
+
+      ${section('💉', 'Cardiac Arrest Medications', true, `
+        <div class="sub-header">Every 3–5 min during pulseless arrest</div>
+        <div class="data-row highlight">
+          <div class="row-label">Epinephrine<span class="sublabel">0.01 mg/kg IV/IO — 1:10,000 solution<br>Max 1 mg per dose</span></div>
+          <div class="row-value danger">${epiDose} mg <span class="unit">= ${epiVol} mL of 1:10,000</span></div>
+        </div>
+
+        <div class="sub-header">Shockable rhythms (VF/pVT)</div>
+        <div class="data-row">
+          <div class="row-label">Amiodarone<span class="sublabel">5 mg/kg IV/IO rapid; may repeat × 2, max 300 mg/dose</span></div>
+          <div class="row-value purple">${amio} <span class="unit">mg IV/IO</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Lidocaine (alt to amio)<span class="sublabel">1 mg/kg IV/IO, max 100 mg</span></div>
+          <div class="row-value">${lido} <span class="unit">mg IV/IO</span></div>
+        </div>
+
+        <div class="sub-header">SVT (with pulse)</div>
+        <div class="data-row">
+          <div class="row-label">Adenosine 1st dose<span class="sublabel">0.1 mg/kg rapid IV, max 6 mg — flush fast</span></div>
+          <div class="row-value blue">${adenoDose1} <span class="unit">mg rapid IV</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Adenosine 2nd dose<span class="sublabel">0.2 mg/kg, max 12 mg</span></div>
+          <div class="row-value blue">${adenoDose2} <span class="unit">mg rapid IV</span></div>
+        </div>
+      `)}
+
+      ${section('⚡', 'Defibrillation / Cardioversion', true, `
+        <div class="data-row highlight">
+          <div class="row-label">Defib — Initial (VF/pVT)<span class="sublabel">2 J/kg</span></div>
+          <div class="row-value danger">${defibInitial} <span class="unit">J</span></div>
+        </div>
+        <div class="data-row highlight">
+          <div class="row-label">Defib — Subsequent<span class="sublabel">4 J/kg</span></div>
+          <div class="row-value danger">${defibSubseq} <span class="unit">J</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Defib — Maximum<span class="sublabel">10 J/kg, not to exceed adult dose</span></div>
+          <div class="row-value">${defibMax} <span class="unit">J</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Synchronized Cardioversion<span class="sublabel">0.5–1 J/kg initial; 2 J/kg if no response</span></div>
+          <div class="row-value warn">${r(0.5*kg,0)}–${r(kg,0)} <span class="unit">J sync</span></div>
+        </div>
+      `)}
+
+      ${section('🩸', 'Fluids & Metabolic', false, `
+        <div class="data-row">
+          <div class="row-label">NS / LR Bolus<span class="sublabel">10–20 mL/kg IV/IO — reassess after each</span></div>
+          <div class="row-value blue">${fluidLo}–${fluidHi} <span class="unit">mL</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Sodium Bicarb<span class="sublabel">1 mEq/kg slow IV — only if confirmed acidosis</span></div>
+          <div class="row-value">${bicarb} <span class="unit">mEq IV slow</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Dextrose (D25W)<span class="sublabel">0.5–1 g/kg; D25W = 2–4 mL/kg</span></div>
+          <div class="row-value green">${d25Lo}–${d25Hi} <span class="unit">mL D25W</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Dextrose (D10W)<span class="sublabel">5–10 mL/kg (preferred for neonates)</span></div>
+          <div class="row-value green">${d10Lo}–${d10Hi} <span class="unit">mL D10W</span></div>
+        </div>
+        <div class="data-row">
+          <div class="row-label">Calcium Gluconate 10%<span class="sublabel">60 mg/kg IV slow — hypocalcemia, hyperkalemia, CaChB OD</span></div>
+          <div class="row-value">${calcGluc} <span class="unit">mg IV slow</span></div>
+        </div>
+      `)}
+
+    </div>
+
+    <div class="sources">
+      <strong>Reference Sources</strong>
+      PALS Provider Manual 2020 (AHA) · Broselow-Luten Tape 2017 Edition · 
+      Pediatric Advanced Life Support Guidelines (AHA/AAP) · 
+      Roberts & Hedges: Clinical Procedures in Emergency Medicine, 7th ed · 
+      Lexicomp Pediatric Drug Reference · AAP PREP · 
+      Nichols: Critical Heart Disease in Infants and Children<br><br>
+      <strong style="color:var(--danger)">Clinical Disclaimer</strong>
+      These values are generated from published reference formulas and are intended as a cognitive aid only. 
+      All doses must be verified against your institution's formulary and confirmed by a licensed clinician 
+      before administration. This tool does not replace clinical judgment or official emergency protocols.
+    </div>
+  `;
+}
+
+function section(icon, title, open, content) {
+  const id = 'sec-' + Math.random().toString(36).slice(2,7);
+  return `
+    <div class="section">
+      <div class="section-header ${open ? 'open' : ''}" onclick="toggleSection('${id}', this)">
+        <span class="section-icon">${icon}</span>
+        <span class="section-title">${title}</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="section-body" id="${id}" style="${open ? '' : 'display:none'}">
+        ${content}
+      </div>
+    </div>
+  `;
+}
+
+function toggleSection(id, header) {
+  const body = document.getElementById(id);
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  header.classList.toggle('open', !open);
+}
+
+function showTab(name, btn) {
+  document.getElementById('tab-intub').style.display = name === 'intub' ? 'block' : 'none';
+  document.getElementById('tab-rsi').style.display   = name === 'rsi'   ? 'block' : 'none';
+  document.getElementById('tab-code').style.display  = name === 'code'  ? 'block' : 'none';
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Allow Enter key to trigger calculate
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') calculate();
+});
+</script>
+</body>
+</html>
