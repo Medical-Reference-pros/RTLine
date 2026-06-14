@@ -270,6 +270,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .hbtn-close{width:100%;height:38px;background:transparent;color:#aaa;border:1px solid #e0e0dc;border-radius:8px;font-size:13px;cursor:pointer}
 .hbtn-close:hover{background:#f0efe8}
 .copy-confirm{font-size:12px;color:#2d6129;text-align:center;height:16px;margin-bottom:4px}
+
+/* QR modal */
+.qr-modal{max-width:320px;width:100%;text-align:center}
+.qr-img{width:200px;height:200px;margin:0 auto 12px;display:block;border:3px solid #e5e5e2;border-radius:12px;padding:6px;background:#fff}
+.qr-url{font-size:11px;color:#888;word-break:break-all;margin-bottom:14px;line-height:1.5}
 @media(max-width:600px){
   .app-container{padding:1rem 0.75rem 2rem}
   .tab-btn{padding:8px 10px;font-size:12px}
@@ -308,6 +313,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="app-container">
 
 <!-- HANDOFF MODAL -->
+<!-- QR MODAL -->
+<div class="modal-overlay" id="qr-overlay" style="display:none" onclick="closeQR(event)">
+  <div class="modal qr-modal" onclick="event.stopPropagation()">
+    <h3 style="margin-bottom:4px">&#128247; Share RTLine</h3>
+    <div class="modal-sub" style="margin-bottom:14px">Scan to open on any phone</div>
+    <img class="qr-img" src="data:image/png;base64,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" alt="QR code for RTLine">
+    <div class="qr-url">https://medical-reference-pros.github.io/RTLine/</div>
+    <button class="tos-accept" style="margin-bottom:8px" onclick="closeQR()">Close</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="handoff-overlay" style="display:none" onclick="closeHandoff(event)">
   <div class="modal handoff-modal" onclick="event.stopPropagation()">
     <h3 style="margin-bottom:3px">&#128203; Shift Handoff Summary</h3>
@@ -326,7 +342,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="app-title" style="display:none">Respiratory Therapy Clinical Reference</div>
     <div class="app-sub">Adult &amp; Pediatric/Neonate reference tools</div>
     <div class="disclaimer">&#9888;&#65039; Reference tool only. No PHI. Room numbers only — no patient names or MRNs. Verify all values before clinical use.</div>
-    <div class="app-version">v1.0 &nbsp;&#183;&nbsp; <button onclick="showTos()" style="background:none;border:none;font-size:11px;color:#bbb;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit">Terms of Use</button> &nbsp;&#183;&nbsp; <a href="mailto:medicalreferencepros@gmail.com?subject=RTLine%20Feedback" style="font-size:11px;color:#bbb;text-decoration:underline">Feedback</a></div>
+    <div class="app-version">v1.0 &nbsp;&#183;&nbsp; <button onclick="showTos()" style="background:none;border:none;font-size:11px;color:#bbb;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit">Terms of Use</button> &nbsp;&#183;&nbsp; <a href="mailto:medicalreferencepros@gmail.com?subject=RTLine%20Feedback" style="font-size:11px;color:#bbb;text-decoration:underline">Feedback</a> &nbsp;&#183;&nbsp; <button onclick="document.getElementById('qr-overlay').style.display='flex'" style="background:none;border:none;font-size:11px;color:#bbb;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit">&#128247; QR Code</button></div>
   </div>
 
   <!-- MAIN TABS -->
@@ -1670,6 +1686,11 @@ function pShowT(name,btn){
   ['intub','rsi','code'].forEach(t=>{var el=document.getElementById('pt-'+t);if(el)el.style.display=t===name?'block':'none';});
   document.querySelectorAll('.peds-itab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+}
+
+function closeQR(e){
+  if(e&&e.target!==document.getElementById('qr-overlay'))return;
+  document.getElementById('qr-overlay').style.display='none';
 }
 </script>
 </body>
