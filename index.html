@@ -90,6 +90,10 @@ input::placeholder{color:#c8c8c8}
 .img-counter{font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;background:#f0efe8;color:#666;border:1px solid #e0e0dc;white-space:nowrap}
 .img-counter.warn{background:#fef6e4;color:#7a5200;border-color:#f0c080}
 .img-counter.danger{background:#fdecea;color:#8a2020;border-color:#f0a0a0}
+#img-toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;font-size:13px;line-height:1.45;padding:12px 18px;border-radius:10px;box-shadow:0 4px 18px rgba(0,0,0,0.28);max-width:320px;width:90%;text-align:center;opacity:0;transition:opacity 0.25s,transform 0.25s;pointer-events:none;z-index:9999}
+#img-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#img-toast.warn-toast{border-top:3px solid #f0c060}
+#img-toast.danger-toast{border-top:3px solid #e05050}
 .session-clear{font-size:12px;color:#aaa;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0}
 .session-clear:hover{color:#8a2020}
 .add-patient-bar{background:#f0efe8;border:1px dashed #ccc;border-radius:10px;padding:14px 16px;margin-bottom:1.25rem;display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
@@ -104,7 +108,13 @@ input::placeholder{color:#c8c8c8}
 .device-bipap{background:#eaf4e8;color:#2d6129}
 .device-cpap{background:#eaf4e8;color:#2d6129}
 .device-hfnc{background:#fef6e4;color:#7a5200}
+.device-none{background:#f0efe8;color:#aaa;font-style:italic}
 .device-o2{background:#f0efe8;color:#555}
+.device-o2hfc{background:#f0efe8;color:#555}
+.device-o2mask{background:#f0efe8;color:#555}
+.device-o2prb{background:#f0efe8;color:#555}
+.device-o2nrb{background:#f0efe8;color:#555}
+.device-o2venti{background:#f0efe8;color:#555}
 .device-trach{background:#fdecea;color:#8a2020}
 .card-ts{font-size:11px;color:#aaa;margin-left:auto}
 .card-status{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;margin-left:6px}
@@ -444,6 +454,7 @@ input::placeholder{color:#c8c8c8}
   <div id="tab-rounding" class="tab-panel active">
     <div class="rounding-toolbar">
       <div id="img-counter" class="img-counter">&#128247; Images: 0 / 20</div>
+  <div id="img-toast"></div>
       <div style="display:flex;gap:8px;align-items:center">
         <button class="btn-sm" onclick="showHandoff()">&#8679; Handoff</button>
         <button class="btn-sm" onclick="exportSession()">&#128228; Export</button>
@@ -458,12 +469,20 @@ input::placeholder{color:#c8c8c8}
       <div class="field" style="flex:1;min-width:140px">
         <label>Device</label>
         <select id="new-device">
+          <option value="">— Select device —</option>
           <option value="vent">Ventilator</option>
           <option value="bipap">BiPAP</option>
           <option value="cpap">CPAP</option>
           <option value="hfnc">High Flow (HFNC)</option>
-          <option value="o2">Oxygen (NC/mask/NRB)</option>
           <option value="trach">Trach (no vent)</option>
+          <optgroup label="Oxygen delivery">
+          <option value="o2">Nasal cannula</option>
+          <option value="o2hfc">Hi-flow cannula (Salter/equiv)</option>
+          <option value="o2mask">Simple face mask</option>
+          <option value="o2prb">Partial rebreather mask</option>
+          <option value="o2nrb">Non-rebreather mask</option>
+          <option value="o2venti">Venturi mask</option>
+          </optgroup>
         </select>
       </div>
       <button class="btn-sm accent" onclick="addPatient()" style="height:42px;margin-top:18px">+ Add room</button>
@@ -1646,21 +1665,46 @@ function saveSession(){
   try{localStorage.setItem(SESSION_KEY,JSON.stringify(light));}catch(e){}
 }
 function countImgs(){return patients.reduce((n,p)=>n+p.images.filter(Boolean).length,0);}
+let _imgWarnFired=false,_imgDangerFired=false;
+function showImgToast(msg,type,duration){
+  const t=document.getElementById('img-toast');
+  if(!t)return;
+  t.textContent=msg;
+  t.className='show '+(type||'');
+  clearTimeout(t._tid);
+  t._tid=setTimeout(()=>{t.className='';},duration||5000);
+}
 function updateCounter(){
   totalImages=countImgs();
   const el=document.getElementById('img-counter');
   if(!el)return;
   el.textContent='📷 Images: '+totalImages+' / '+MAX_IMG;
-  el.className='img-counter'+(totalImages>=MAX_IMG?' danger':totalImages>=15?' warn':'');
+  if(totalImages>=MAX_IMG){
+    el.className='img-counter danger';
+    if(!_imgDangerFired){
+      _imgDangerFired=true;
+      showImgToast('⚠️ Image limit reached ('+MAX_IMG+'/'+MAX_IMG+'). Remove photos from patient cards to free space before capturing more.','danger-toast',7000);
+    }
+  } else if(totalImages>=15){
+    el.className='img-counter warn';
+    if(!_imgWarnFired){
+      _imgWarnFired=true;
+      showImgToast('📷 '+totalImages+'/'+MAX_IMG+' images used — approaching the limit. Consider removing older photos to keep space available.','warn-toast',6000);
+    }
+  } else {
+    el.className='img-counter';
+    if(totalImages<14){_imgWarnFired=false;_imgDangerFired=false;}
+  }
 }
 
 // ── PATIENT CRUD ──
-const DLABELS={vent:'Ventilator',bipap:'BiPAP',cpap:'CPAP',hfnc:'HFNC',o2:'Oxygen',trach:'Trach'};
+const DLABELS={vent:'Ventilator',bipap:'BiPAP',cpap:'CPAP',hfnc:'HFNC',o2:'Nasal Cannula',o2hfc:'Hi-Flow Cannula',o2mask:'Face Mask',o2prb:'Partial Rebr',o2nrb:'Non-Rebr',o2venti:'Venturi Mask',trach:'Trach','':'No device'};
 
 function addPatient(){
   const room=document.getElementById('new-room').value.trim();
   const device=document.getElementById('new-device').value;
   if(!room){document.getElementById('new-room').focus();return;}
+  if(!device){document.getElementById('new-device').focus();return;}
   patients.unshift({
     id:++uid,room,device,
     ts:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),
@@ -1687,7 +1731,13 @@ function addPatient(){
           // device support
           sbtStatus:'none',sbtTime:'',maskSeal:'',heater:'',heaterTemp:'',humidifier:'',
           // status
-          mentation:'',tolerance:'',spo2:'',notes:'',flow:'',fio2:''},
+          mentation:'',tolerance:'',spo2:'',notes:'',flow:'',fio2:'',
+          // abg collapse
+          abgOpen:false,
+          // o2 subtype
+          o2subtype:'',venturiPct:'',
+          // therapy
+          therapies:''},
     images:[null,null]
   });
   saveSession();
@@ -1705,6 +1755,72 @@ function toggleCard(id){
   if(p){p.open=!p.open;saveSession();const b=document.getElementById('cb-'+id),ch=document.getElementById('chev-'+id);if(b)b.classList.toggle('open',p.open);if(ch)ch.classList.toggle('open',p.open);}
 }
 
+function toggleAbg(id){
+  const body=document.getElementById('abg-body-'+id);
+  const tog=document.getElementById('abg-tog-'+id);
+  const p=patients.find(x=>x.id===id);
+  if(!body)return;
+  const isOpen=body.style.display!=='none';
+  body.style.display=isOpen?'none':'block';
+  if(tog)tog.style.transform=isOpen?'rotate(-90deg)':'rotate(0deg)';
+  if(p){p.data.abgOpen=String(!isOpen);saveSession();}
+}
+
+function saveTherapies(id){
+  const p=patients.find(x=>x.id===id);
+  if(!p)return;
+  const therapyKeys=['neb','neb2','mdi','mdi2','is','flutter','cpt'];
+  const parts=[];
+  therapyKeys.forEach(k=>{
+    const btn=document.getElementById('th-btn-'+id+'-'+k);
+    if(btn&&btn.dataset.active==='1'){
+      const freq=document.getElementById('th-freq-'+id+'-'+k);
+      parts.push(k+(freq&&freq.value?':'+freq.value:''));
+    }
+  });
+  // PRN — text field, always included if non-empty
+  const prnEl=document.getElementById('th-prn-'+id);
+  if(prnEl&&prnEl.value.trim())parts.push('prn:'+prnEl.value.trim());
+  const hidden=document.getElementById('p'+id+'-therapies');
+  if(hidden)hidden.value=parts.join('|');
+  saveField(id);
+}
+
+function toggleTherapy(patId, val, btn){
+  const freq=document.getElementById('th-freq-'+patId+'-'+val);
+  const active=btn.dataset.active==='1';
+  if(active){
+    btn.dataset.active='0';
+    btn.style.background='#fff';btn.style.color='#555';
+    btn.style.borderColor='#ccc';btn.style.fontWeight='400';
+    if(freq)freq.style.display='none';
+  } else {
+    btn.dataset.active='1';
+    btn.style.background='#2d6129';btn.style.color='#fff';
+    btn.style.borderColor='#2d6129';btn.style.fontWeight='600';
+    if(freq)freq.style.display='inline-block';
+  }
+  saveTherapies(patId);
+}
+
+function toggleBreathSound(patId, val, btn){
+  const hidden = document.getElementById('p'+patId+'-breathSounds');
+  if(!hidden) return;
+  let sel = hidden.value ? hidden.value.split(',').map(s=>s.trim()).filter(Boolean) : [];
+  const idx = sel.indexOf(val);
+  if(idx > -1){
+    sel.splice(idx,1);
+    btn.style.background='#fff'; btn.style.color='#555';
+    btn.style.borderColor='#ccc'; btn.style.fontWeight='400';
+  } else {
+    sel.push(val);
+    btn.style.background='#1a4a8a'; btn.style.color='#fff';
+    btn.style.borderColor='#1a4a8a'; btn.style.fontWeight='600';
+  }
+  hidden.value = sel.join(', ');
+  saveField(patId);
+}
+
 function saveField(id){
   const p=patients.find(x=>x.id===id);
   if(!p)return;
@@ -1715,7 +1831,8 @@ function saveField(id){
    'ipap','epap','bipapRate','bipapItime','bipapFio2',
    'alarmPhi','alarmPlo','alarmPeepHi','alarmPeepLo',
    'alarmVtHi','alarmVtLo','alarmVeHi','alarmVeLo','alarmRrHi','alarmRrLo',
-   'sbtStatus','sbtTime','maskSeal','heater','heaterTemp','humidifier','mentation','tolerance','spo2','notes','flow','fio2'].forEach(f=>{
+   'sbtStatus','sbtTime','maskSeal','heater','heaterTemp','humidifier','mentation','tolerance','breathSounds','spo2','notes','flow','fio2',
+   'o2subtype','venturiPct','therapies'].forEach(f=>{
     const el=document.getElementById('p'+id+'-'+f);if(el)p.data[f]=el.value;
   });
   saveSession();
@@ -1791,7 +1908,11 @@ function renderPatients(){
 }
 
 function buildCard(p){
-  const isVent=p.device==='vent',isNIV=p.device==='bipap'||p.device==='cpap',isHFNC=p.device==='hfnc',isO2=p.device==='o2',isTrach=p.device==='trach';
+  const isVent=p.device==='vent',isNIV=p.device==='bipap'||p.device==='cpap',isHFNC=p.device==='hfnc',isTrach=p.device==='trach';
+  const O2_DEVICES=['o2','o2hfc','o2mask','o2prb','o2nrb','o2venti'];
+  const isO2=O2_DEVICES.includes(p.device);
+  const isVenti=p.device==='o2venti';
+  const isFloorO2=isO2&&!isHFNC;
   const d=p.data,sbt=d.sbtStatus||'none';
   let badge='';
   if(sbt==='active')badge='<span class="card-status status-sbt">SBT Active</span>';
@@ -1843,11 +1964,17 @@ function buildCard(p){
       <option value="poor"${d.maskSeal==='poor'?' selected':''}>🚨 Poor seal</option>
     </select></div>`:'';
 
+  const venturiOptions=['24','28','31','35','40','50'];
   const flowField=(isHFNC||isO2)?`
-    <div class="card-field"><label>${isHFNC?'Flow (L/min)':'Flow / device'}</label>
-      <input type="text" id="p${p.id}-flow" value="${d.flow||''}" placeholder="${isHFNC?'40 L/min':'2 L NC'}" onchange="saveField(${p.id})"></div>
-    <div class="card-field"><label>FiO₂ / O₂ target</label>
-      <input type="text" id="p${p.id}-fio2" value="${d.fio2||''}" placeholder="${isHFNC?'0.40':'94-98%'}" onchange="saveField(${p.id})"></div>`:'';
+    <div class="card-field"><label>${isHFNC?'Flow (L/min)':'Flow (L/min)'}</label>
+      <input type="text" id="p${p.id}-flow" value="${d.flow||''}" placeholder="${isHFNC?'40':'2'}" onchange="saveField(${p.id})"></div>
+    ${isVenti?`<div class="card-field"><label>Venturi FiO&#8322;</label>
+      <select id="p${p.id}-venturiPct" onchange="saveField(${p.id})">
+        <option value="">—</option>
+        ${venturiOptions.map(v=>`<option value="${v}"${d.venturiPct===v?' selected':''}>${v}%</option>`).join('')}
+      </select></div>`:`<div class="card-field"><label>FiO&#8322; / O&#8322; target</label>
+      <input type="text" id="p${p.id}-fio2" value="${d.fio2||''}" placeholder="${isHFNC?'0.40':'94-98%'}" onchange="saveField(${p.id})"></div>`}
+  `:'';
 
   const heaterField=(isVent||isNIV||isTrach)?`
     <div class="card-field"><label>Heater status</label>
@@ -1989,7 +2116,7 @@ function buildCard(p){
   return `<div class="patient-card" id="card-${p.id}">
     <div class="card-header" onclick="toggleCard(${p.id})">
       <div class="card-room">${p.room}</div>
-      <span class="card-device device-${p.device}" id="card-badge-${p.id}">${DLABELS[p.device]||p.device}</span>
+      <span class="card-device ${p.device?'device-'+p.device:'device-none'}" id="card-badge-${p.id}">${DLABELS[p.device]||'No device'}</span>
       ${badge}
       <div class="card-ts">${p.ts}</div>
       <div class="card-chevron" id="chev-${p.id}">&#9660;</div>
@@ -2014,21 +2141,32 @@ function buildCard(p){
             <div class="card-field"><label>CXR findings</label>
               <input type="text" id="p${p.id}-cxr" value="${d.cxr||''}" placeholder="e.g. bilateral infiltrates, improved" onchange="saveField(${p.id})"></div>
           </div>
-          <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:10px 0 6px">Last ABG</div>
-          <div class="card-grid">
-            <div class="card-field"><label>pH</label>
-              <input type="number" id="p${p.id}-lastAbgPh" value="${d.lastAbgPh||''}" placeholder="7.38" step="0.01" onchange="saveField(${p.id})"></div>
-            <div class="card-field"><label>PaCO&#8322;</label>
-              <input type="number" id="p${p.id}-lastAbgPco2" value="${d.lastAbgPco2||''}" placeholder="42" onchange="saveField(${p.id})"></div>
-            <div class="card-field"><label>PaO&#8322;</label>
-              <input type="number" id="p${p.id}-lastAbgPo2" value="${d.lastAbgPo2||''}" placeholder="88" onchange="saveField(${p.id})"></div>
-            <div class="card-field"><label>HCO&#8323;&#8315;</label>
-              <input type="number" id="p${p.id}-lastAbgHco3" value="${d.lastAbgHco3||''}" placeholder="24" onchange="saveField(${p.id})"></div>
-            <div class="card-field"><label>FiO&#8322; at draw</label>
-              <input type="text" id="p${p.id}-lastAbgFio2" value="${d.lastAbgFio2||''}" placeholder="0.40" onchange="saveField(${p.id})"></div>
-            <div class="card-field"><label>P/F ratio</label>
-              <input type="text" value="${(d.lastAbgPo2&&d.lastAbgFio2)?(parseFloat(d.lastAbgPo2)/parseFloat(d.lastAbgFio2)).toFixed(0):''}" placeholder="auto" readonly style="background:#f0efe8;color:#555"></div>
-          </div>
+          ${(()=>{
+            const abgDefaultOpen = ['vent','bipap','cpap','hfnc','trach'].includes(p.device);
+            const abgOpen = d.abgOpen !== undefined ? (d.abgOpen==='true'||d.abgOpen===true) : abgDefaultOpen;
+            return `<div style="border-top:1px solid #e8f0fe;margin:10px 0 0;padding-top:8px">
+              <div onclick="toggleAbg(${p.id})" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;padding:2px 0 6px">
+                <span style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px">Last ABG</span>
+                <span id="abg-tog-${p.id}" style="font-size:11px;color:#aaa;transition:transform 0.2s;display:inline-block;transform:${abgOpen?'rotate(0deg)':'rotate(-90deg)'}">&#9660;</span>
+              </div>
+              <div id="abg-body-${p.id}" style="display:${abgOpen?'block':'none'}">
+                <div class="card-grid">
+                  <div class="card-field"><label>pH</label>
+                    <input type="number" id="p${p.id}-lastAbgPh" value="${d.lastAbgPh||''}" placeholder="7.38" step="0.01" onchange="saveField(${p.id})"></div>
+                  <div class="card-field"><label>PaCO&#8322;</label>
+                    <input type="number" id="p${p.id}-lastAbgPco2" value="${d.lastAbgPco2||''}" placeholder="42" onchange="saveField(${p.id})"></div>
+                  <div class="card-field"><label>PaO&#8322;</label>
+                    <input type="number" id="p${p.id}-lastAbgPo2" value="${d.lastAbgPo2||''}" placeholder="88" onchange="saveField(${p.id})"></div>
+                  <div class="card-field"><label>HCO&#8323;&#8315;</label>
+                    <input type="number" id="p${p.id}-lastAbgHco3" value="${d.lastAbgHco3||''}" placeholder="24" onchange="saveField(${p.id})"></div>
+                  <div class="card-field"><label>FiO&#8322; at draw</label>
+                    <input type="text" id="p${p.id}-lastAbgFio2" value="${d.lastAbgFio2||''}" placeholder="0.40" onchange="saveField(${p.id})"></div>
+                  <div class="card-field"><label>P/F ratio</label>
+                    <input type="text" value="${(d.lastAbgPo2&&d.lastAbgFio2)?(parseFloat(d.lastAbgPo2)/parseFloat(d.lastAbgFio2)).toFixed(0):''}" placeholder="auto" readonly style="background:#f0efe8;color:#555"></div>
+                </div>
+              </div>
+            </div>`;
+          })()}
           <div class="card-grid" style="margin-top:8px">
             <div class="card-field full"><label>Clinical notes / report summary</label>
               <textarea id="p${p.id}-clinicalNote" placeholder="e.g. Intubated in ED 3 days ago for flash pulmonary edema. Chest film improving. Family at bedside. Plan to trial SBT this morning…" onchange="saveField(${p.id})">${d.clinicalNote||''}</textarea></div>
@@ -2046,7 +2184,14 @@ function buildCard(p){
             <option value="bipap"${p.device==='bipap'?' selected':''}>BiPAP</option>
             <option value="cpap"${p.device==='cpap'?' selected':''}>CPAP</option>
             <option value="hfnc"${p.device==='hfnc'?' selected':''}>High Flow (HFNC)</option>
-            <option value="o2"${p.device==='o2'?' selected':''}>Oxygen (NC/mask/NRB)</option>
+            <optgroup label="Oxygen delivery">
+            <option value="o2"${p.device==='o2'?' selected':''}>Nasal cannula</option>
+            <option value="o2hfc"${p.device==='o2hfc'?' selected':''}>Hi-flow cannula (Salter/equiv)</option>
+            <option value="o2mask"${p.device==='o2mask'?' selected':''}>Simple face mask</option>
+            <option value="o2prb"${p.device==='o2prb'?' selected':''}>Partial rebreather mask</option>
+            <option value="o2nrb"${p.device==='o2nrb'?' selected':''}>Non-rebreather mask</option>
+            <option value="o2venti"${p.device==='o2venti'?' selected':''}>Venturi mask</option>
+            </optgroup>
             <option value="trach"${p.device==='trach'?' selected':''}>Trach (no vent)</option>
           </select>
         </div>
@@ -2058,6 +2203,48 @@ function buildCard(p){
           <div class="card-field"><label>SpO&#8322; at check</label>
             <input type="number" id="p${p.id}-spo2" value="${d.spo2||''}" placeholder="96 %" onchange="saveField(${p.id})"></div>
         </div>
+      </div>
+
+      <!-- THERAPY BLOCK -->
+      <div class="card-section">
+        <div class="card-section-title">Respiratory therapy</div>
+        <div style="font-size:10px;color:#aaa;margin-bottom:8px;font-style:italic">Select all ordered therapies — each shows a frequency</div>
+        ${(()=>{
+          const freqOpts=['q1h','q2h','q4h','q6h','q8h','q12h','BID','TID','QID','PRN'];
+          const saved=(d.therapies||'').split('|').filter(Boolean);
+          const savedMap={};
+          saved.forEach(s=>{const[k,...rest]=s.split(':');savedMap[k]=rest.join(':');});
+          function thBtn(val,label){
+            const active=savedMap.hasOwnProperty(val);
+            const freq=savedMap[val]||'';
+            return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+              <button type="button" id="th-btn-${p.id}-${val}" onclick="toggleTherapy(${p.id},'${val}',this)"
+                data-active="${active?'1':'0'}" style="padding:4px 11px;font-size:11px;border-radius:14px;border:1px solid ${active?'#2d6129':'#ccc'};background:${active?'#2d6129':'#fff'};color:${active?'#fff':'#555'};cursor:pointer;white-space:nowrap;font-weight:${active?'600':'400'};min-width:60px">${label}</button>
+              <select id="th-freq-${p.id}-${val}" onchange="saveTherapies(${p.id})"
+                style="display:${active?'inline-block':'none'};font-size:11px;padding:3px 6px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#333">
+                <option value="">freq</option>
+                ${freqOpts.map(f=>`<option value="${f}"${freq===f?' selected':''}>${f}</option>`).join('')}
+              </select>
+            </div>`;
+          }
+          const prnVal=savedMap['prn']||'';
+          const prnRow=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+            <span style="padding:4px 11px;font-size:11px;border-radius:14px;border:1px solid #b06000;background:#fef6e4;color:#7a5200;font-weight:600;white-space:nowrap;min-width:60px;text-align:center">PRN</span>
+            <input type="text" id="th-prn-${p.id}" value="${prnVal}" placeholder="e.g. Duoneb PRN q4h min" onchange="saveTherapies(${p.id})"
+              style="flex:1;font-size:11px;padding:4px 8px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#333">
+          </div>`;
+          return [
+            thBtn('neb','Neb 1'),
+            thBtn('neb2','Neb 2'),
+            thBtn('mdi','MDI 1'),
+            thBtn('mdi2','MDI 2'),
+            thBtn('is','IS'),
+            thBtn('flutter','Flutter'),
+            thBtn('cpt','CPT/Vest'),
+            prnRow
+          ].join('');
+        })()}
+        <input type="hidden" id="p${p.id}-therapies" value="${d.therapies||''}">
       </div>
 
       <!-- EQUIPMENT SETTINGS (vent, APRV, BiPAP) -->
@@ -2092,6 +2279,34 @@ function buildCard(p){
               <option value="dysync"${d.tolerance==='dysync'?' selected':''}>Dyssynchronous</option>
               <option value="intolerant"${d.tolerance==='intolerant'?' selected':''}>Intolerant</option>
             </select></div>
+          <div class="card-field full">
+            <label>Breath sounds <span style="font-weight:400;text-transform:none;color:#aaa;font-size:10px">(tap to select — multiple allowed)</span></label>
+            <div id="p${p.id}-breathSounds-btns" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px">
+              ${(()=>{
+                const opts=[
+                  ['clear','Clear bilat'],
+                  ['diminished-bilateral','Diminished bilat'],
+                  ['diminished-left','Diminished L'],
+                  ['diminished-right','Diminished R'],
+                  ['crackles-bilateral','Crackles bilat'],
+                  ['crackles-left','Crackles L'],
+                  ['crackles-right','Crackles R'],
+                  ['wheeze-exp','Wheeze — exp'],
+                  ['wheeze-insp','Wheeze — insp'],
+                  ['rhonchi','Rhonchi'],
+                  ['stridor','Stridor'],
+                  ['absent-left','Absent L'],
+                  ['absent-right','Absent R']
+                ];
+                const sel=(d.breathSounds||'').split(',').map(s=>s.trim()).filter(Boolean);
+                return opts.map(([v,label])=>{
+                  const active=sel.includes(v);
+                  return `<button type="button" onclick="toggleBreathSound(${p.id},'${v}',this)" style="padding:4px 9px;font-size:11px;border-radius:14px;border:1px solid ${active?'#1a4a8a':'#ccc'};background:${active?'#1a4a8a':'#fff'};color:${active?'#fff':'#555'};cursor:pointer;white-space:nowrap;font-weight:${active?'600':'400'}">${label}</button>`;
+                }).join('');
+              })()}
+            </div>
+            <input type="hidden" id="p${p.id}-breathSounds" value="${d.breathSounds||''}">
+          </div>
         </div>
       </div>
 
@@ -2154,7 +2369,7 @@ function viewImg(dataUrl){
   ov.onclick=e=>{if(e.target===ov)document.body.removeChild(ov);};
   document.body.appendChild(ov);
 }
-function showImgLimit(){alert('Image limit reached ('+MAX_IMG+'/'+MAX_IMG+'). Remove an existing image to add a new one.');}
+function showImgLimit(){showImgToast('⚠️ Image limit reached ('+MAX_IMG+'/'+MAX_IMG+'). Remove a photo from a patient card to add a new one.','danger-toast',7000);}
 
 function confirmClearSession(){
   if(confirm('Clear all rooms and images for this shift? This cannot be undone.')){
