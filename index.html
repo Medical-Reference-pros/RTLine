@@ -280,12 +280,10 @@ input::placeholder{color:#c8c8c8}
 .about-icon{font-size:16px;flex-shrink:0;width:22px;text-align:center;margin-top:1px}
 .about-scroll{max-height:65vh;overflow-y:auto;padding-right:4px}
 .handoff-modal{max-width:480px;width:100%}
-.handoff-preview{font-family:monospace;font-size:12px;line-height:1.6;white-space:pre-wrap;background:#f0efe8;border:1px solid #e0e0dc;border-radius:8px;padding:12px 14px;max-height:52vh;overflow-y:auto;color:#1a1a1a;margin-bottom:14px}
+.handoff-preview{font-family:monospace;font-size:12px;line-height:1.6;white-space:pre-wrap;background:#f0efe8;border:1px solid #e0e0dc;border-radius:8px;padding:12px 14px;max-height:52vh;overflow-y:auto;color:#1a1a1a;margin-bottom:10px}
 .handoff-btn-row{display:flex;gap:10px;margin-bottom:8px}
 .handoff-btn-row button{flex:1;height:46px;border:1px solid transparent;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
-.hbtn-copy{background:#f0efe8;color:#1a1a1a;border-color:#ccc}
-.hbtn-copy:hover{background:#e0e0dc}
-.hbtn-share{background:#1a4a8a;color:#fff}
+.hbtn-share{background:#1a4a8a;color:#fff;width:100%;height:46px;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:8px}
 .hbtn-share:hover{opacity:0.88}
 .hbtn-close{width:100%;height:38px;background:transparent;color:#aaa;border:1px solid #e0e0dc;border-radius:8px;font-size:13px;cursor:pointer}
 .hbtn-close:hover{background:#f0efe8}
@@ -415,14 +413,14 @@ input::placeholder{color:#c8c8c8}
 
 <div class="modal-overlay" id="handoff-overlay" style="display:none" onclick="closeHandoff(event)">
   <div class="modal handoff-modal" onclick="event.stopPropagation()">
-    <h3 style="margin-bottom:3px">&#128203; Shift Handoff Summary</h3>
+    <h3 style="margin-bottom:3px">&#8679; Shift Handoff Report</h3>
     <div class="modal-sub" id="handoff-subtitle">Ready to send to oncoming staff</div>
     <div class="handoff-preview" id="handoff-text"></div>
-    <div class="copy-confirm" id="handoff-copy-confirm"></div>
-    <div class="handoff-btn-row">
-      <button class="hbtn-copy" onclick="copyHandoff()">&#128203; Copy</button>
-      <button class="hbtn-share" onclick="shareHandoff()">&#8679; Share</button>
+    <div class="info-box info" style="font-size:12px;padding:8px 12px;margin-bottom:10px;line-height:1.5">
+      &#128231; <strong>Tip:</strong> Tap <em>Send Report</em> then choose <strong>Mail</strong> — the complete report arrives as a ready-to-send email draft.
     </div>
+    <div class="copy-confirm" id="handoff-copy-confirm"></div>
+    <button class="hbtn-share" onclick="shareHandoff()">&#8679; Send Report</button>
     <button class="hbtn-close" onclick="closeHandoff()">Close</button>
   </div>
 </div>
@@ -1714,8 +1712,14 @@ function addPatient(){
           diagnosis:'',daysOnDevice:'',lastAbgPh:'',lastAbgPco2:'',lastAbgPo2:'',lastAbgHco3:'',lastAbgFio2:'',
           cxr:'',clinicalNote:'',
           ptInfoOpen:true,
+          ventSettingsOpen:true,
+          assessOpen:true,
           // ett/airway
           ett:'',cuff:'',secretions:'',
+          // trach fields (shared for trach-only and vent+trach)
+          trachSize:'',trachCuffStatus:'',trachPmv:'',trachObturator:'',
+          // vent airway type toggle
+          ventAirway:'ett',
           // mode/device
           mode:'',
           // vent-specific (conventional)
@@ -1730,8 +1734,25 @@ function addPatient(){
           alarmRrHi:'',alarmRrLo:'',
           // device support
           sbtStatus:'none',sbtTime:'',maskSeal:'',heater:'',heaterTemp:'',humidifier:'',
-          // status
+          // status (legacy kept for compat)
           mentation:'',tolerance:'',spo2:'',notes:'',flow:'',fio2:'',
+          // assessment — neuro
+          rass:'',mentalStatus:'',orientation:'',followsCommands:'',
+          // assessment — breathing
+          ptRr:'',wob:'',breathPattern:'',
+          // assessment — auscultation
+          breathSounds:'',
+          // assessment — airway secretions
+          secAmount:'',secColor:'',secConsistency:'',coughStrength:'',
+          // assessment — oxygenation
+          // spo2 already above; add delivery context
+          sfRatio:'',
+          // assessment — comfort
+          painScore:'',comfort:'',sync:'',
+          // assessment — position
+          hob:'',
+          // assessment — notes
+          assessNote:'',
           // abg collapse
           abgOpen:false,
           // o2 subtype
@@ -1832,6 +1853,14 @@ function saveField(id){
    'alarmPhi','alarmPlo','alarmPeepHi','alarmPeepLo',
    'alarmVtHi','alarmVtLo','alarmVeHi','alarmVeLo','alarmRrHi','alarmRrLo',
    'sbtStatus','sbtTime','maskSeal','heater','heaterTemp','humidifier','mentation','tolerance','breathSounds','spo2','notes','flow','fio2',
+   'trachSize','trachCuffStatus','trachPmv','trachObturator','ventAirway',
+   'rass','mentalStatus','orientation','followsCommands',
+   'ptRr','wob','breathPattern',
+   'breathSounds',
+   'secAmount','secColor','secConsistency','coughStrength',
+   'sfRatio',
+   'painScore','comfort','sync',
+   'hob','assessNote',
    'o2subtype','venturiPct','therapies'].forEach(f=>{
     const el=document.getElementById('p'+id+'-'+f);if(el)p.data[f]=el.value;
   });
@@ -1882,6 +1911,40 @@ function togglePtInfo(id){
   body.style.display=isOpen?'none':'block';
   if(tog)tog.classList.toggle('open',!isOpen);
   if(p){p.data.ptInfoOpen=!isOpen;saveSession();}
+}
+
+function toggleVentSettings(id){
+  const body=document.getElementById('vent-settings-body-'+id);
+  const tog=document.getElementById('vent-settings-tog-'+id);
+  const p=patients.find(x=>x.id===id);
+  if(!body)return;
+  const isOpen=body.style.display!=='none';
+  body.style.display=isOpen?'none':'block';
+  if(tog){tog.style.transform=isOpen?'rotate(-90deg)':'rotate(0deg)';}
+  if(p){p.data.ventSettingsOpen=!isOpen;saveSession();}
+}
+
+function toggleAssessment(id){
+  const body=document.getElementById('assess-body-'+id);
+  const tog=document.getElementById('assess-tog-'+id);
+  const p=patients.find(x=>x.id===id);
+  if(!body)return;
+  const isOpen=body.style.display!=='none';
+  body.style.display=isOpen?'none':'block';
+  if(tog){tog.style.transform=isOpen?'rotate(-90deg)':'rotate(0deg)';}
+  if(p){p.data.assessOpen=!isOpen;saveSession();}
+}
+
+function toggleVentAirway(id){
+  const sel=document.getElementById('p'+id+'-ventAirway');
+  const p=patients.find(x=>x.id===id);
+  if(!sel||!p)return;
+  const isTrach=sel.value==='trach';
+  const ettBlock=document.getElementById('vent-ett-block-'+id);
+  const trachBlock=document.getElementById('vent-trach-block-'+id);
+  if(ettBlock)ettBlock.style.display=isTrach?'none':'';
+  if(trachBlock)trachBlock.style.display=isTrach?'':'none';
+  saveField(id);
 }
 
 // ── RENDER ──
@@ -1976,7 +2039,8 @@ function buildCard(p){
       <input type="text" id="p${p.id}-fio2" value="${d.fio2||''}" placeholder="${isHFNC?'0.40':'94-98%'}" onchange="saveField(${p.id})"></div>`}
   `:'';
 
-  const heaterField=(isVent||isNIV||isTrach)?`
+  // Heater: full (vent/NIV includes circuit type), trach-only (no circuit type)
+  const heaterField=(isVent||isNIV)?`
     <div class="card-field"><label>Heater status</label>
       <select id="p${p.id}-heater" onchange="saveField(${p.id})">
         <option value="">—</option>
@@ -1996,7 +2060,22 @@ function buildCard(p){
         <option value="hw"${d.humidifier==='hw'?' selected':''}>Heated wire</option>
         <option value="passover"${d.humidifier==='passover'?' selected':''}>Pass-over</option>
         <option value="hme"${d.humidifier==='hme'?' selected':''}>HME filter</option>
+      </select></div>`:
+  isTrach?`
+    <div class="card-field"><label>Heater status</label>
+      <select id="p${p.id}-heater" onchange="saveField(${p.id})">
+        <option value="">—</option>
+        <option value="ok"${d.heater==='ok'?' selected':''}>✅ OK</option>
+        <option value="low"${d.heater==='low'?' selected':''}>⚠️ Low</option>
+        <option value="refill"${d.heater==='refill'?' selected':''}>🚨 Refill NOW</option>
+        <option value="hme"${d.heater==='hme'?' selected':''}>HME / collar</option>
+      </select></div>
+    <div class="card-field"><label>Heater temp</label>
+      <select id="p${p.id}-heaterTemp" onchange="saveField(${p.id})">
+        <option value="">—</option>
+        ${['36.0','36.5','37.0','37.5','38.0'].map(t=>`<option value="${t}"${d.heaterTemp===t?' selected':''}>${t} °C</option>`).join('')}
       </select></div>`:'';
+
 
   // Full vent settings block
   const isAPRV = d.mode === 'APRV';
@@ -2134,12 +2213,8 @@ function buildCard(p){
             &#9888;&#65039; <strong>No PHI</strong> — diagnoses and clinical notes only. No patient names, MRNs, or identifiers.
           </div>
           <div class="card-grid" style="margin-top:4px">
-            <div class="card-field full"><label>Diagnosis / reason for intubation</label>
-              <input type="text" id="p${p.id}-diagnosis" value="${d.diagnosis||''}" placeholder="e.g. CHF exacerbation, ARDS, post-op respiratory failure" onchange="saveField(${p.id})"></div>
-            <div class="card-field"><label>Days on device</label>
-              <input type="number" id="p${p.id}-daysOnDevice" value="${d.daysOnDevice||''}" placeholder="3" onchange="saveField(${p.id})"></div>
-            <div class="card-field"><label>CXR findings</label>
-              <input type="text" id="p${p.id}-cxr" value="${d.cxr||''}" placeholder="e.g. bilateral infiltrates, improved" onchange="saveField(${p.id})"></div>
+            <div class="card-field full"><label>Diagnosis</label>
+              <input type="text" id="p${p.id}-diagnosis" value="${d.diagnosis||''}" placeholder="e.g. CHF exacerbation, ARDS, post-op respiratory failure, COPD exacerbation" onchange="saveField(${p.id})"></div>
           </div>
           ${(()=>{
             const abgDefaultOpen = ['vent','bipap','cpap','hfnc','trach'].includes(p.device);
@@ -2174,10 +2249,250 @@ function buildCard(p){
         </div>
       </div>
 
-      <!-- DEVICE & MODE -->
-      <div class="card-section">
-        <div class="card-section-title">Device &amp; mode</div>
-        <div class="device-change-row">
+      <!-- ══════════════════════════════════════════ -->
+      <!-- PATIENT ASSESSMENT (collapsible)          -->
+      <!-- ══════════════════════════════════════════ -->
+      <div class="card-section" style="border:1px solid #e0e8f4;border-radius:8px;padding:12px 14px;background:#f6f9ff;margin-bottom:12px">
+        <div onclick="toggleAssessment(${p.id})" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;margin-bottom:4px">
+          <div class="card-section-title" style="color:#1a4a8a;border-color:#c8d8f0;margin-bottom:0;padding-bottom:0;border-bottom:none">&#128203; Patient Assessment</div>
+          <span id="assess-tog-${p.id}" style="font-size:11px;color:#aaa;transition:transform 0.2s;display:inline-block;transform:${(d.assessOpen!==false)?'rotate(0deg)':'rotate(-90deg)'}">&#9660;</span>
+        </div>
+        <div id="assess-body-${p.id}" style="display:${(d.assessOpen!==false)?'block':'none'};border-top:1px solid #c8d8f0;padding-top:10px;margin-top:6px">
+
+        <!-- NEURO / MENTAL STATUS -->
+        <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 6px">Neurological</div>
+        <div class="card-grid" style="margin-bottom:12px">
+          <div class="card-field"><label>RASS</label>
+            <select id="p${p.id}-rass" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="+4"${d.rass==='+4'?' selected':''}>+4 Combative</option>
+              <option value="+3"${d.rass==='+3'?' selected':''}>+3 Very agitated</option>
+              <option value="+2"${d.rass==='+2'?' selected':''}>+2 Agitated</option>
+              <option value="+1"${d.rass==='+1'?' selected':''}>+1 Restless</option>
+              <option value="0"${d.rass==='0'?' selected':''}>0 Alert &amp; calm</option>
+              <option value="-1"${d.rass==='-1'?' selected':''}>−1 Drowsy</option>
+              <option value="-2"${d.rass==='-2'?' selected':''}>−2 Light sedation</option>
+              <option value="-3"${d.rass==='-3'?' selected':''}>−3 Moderate sedation</option>
+              <option value="-4"${d.rass==='-4'?' selected':''}>−4 Deep sedation</option>
+              <option value="-5"${d.rass==='-5'?' selected':''}>−5 Unarousable</option>
+            </select></div>
+          <div class="card-field"><label>Mentation</label>
+            <select id="p${p.id}-mentalStatus" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="Alert &amp; oriented"${d.mentalStatus==='Alert &amp; oriented'?' selected':''}>Alert &amp; oriented</option>
+              <option value="Confused"${d.mentalStatus==='Confused'?' selected':''}>Confused</option>
+              <option value="Delirious"${d.mentalStatus==='Delirious'?' selected':''}>Delirious</option>
+              <option value="Arousable to voice"${d.mentalStatus==='Arousable to voice'?' selected':''}>Arousable to voice</option>
+              <option value="Arousable to stim"${d.mentalStatus==='Arousable to stim'?' selected':''}>Arousable to stim</option>
+              <option value="Obtunded"${d.mentalStatus==='Obtunded'?' selected':''}>Obtunded</option>
+              <option value="Unresponsive"${d.mentalStatus==='Unresponsive'?' selected':''}>Unresponsive</option>
+            </select></div>
+          <div class="card-field"><label>Follows commands</label>
+            <select id="p${p.id}-followsCommands" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="Yes"${d.followsCommands==='Yes'?' selected':''}>Yes — consistently</option>
+              <option value="Inconsistently"${d.followsCommands==='Inconsistently'?' selected':''}>Inconsistently</option>
+              <option value="No"${d.followsCommands==='No'?' selected':''}>No</option>
+              <option value="Sedated/paralyzed"${d.followsCommands==='Sedated/paralyzed'?' selected':''}>Sedated / paralyzed</option>
+            </select></div>
+          <div class="card-field"><label>Orientation</label>
+            <select id="p${p.id}-orientation" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="×4"${d.orientation==='×4'?' selected':''}>×4 (person/place/time/event)</option>
+              <option value="×3"${d.orientation==='×3'?' selected':''}>×3</option>
+              <option value="×2"${d.orientation==='×2'?' selected':''}>×2</option>
+              <option value="×1"${d.orientation==='×1'?' selected':''}>×1</option>
+              <option value="×0"${d.orientation==='×0'?' selected':''}>×0 / disoriented</option>
+              <option value="N/A — sedated"${d.orientation==='N/A — sedated'?' selected':''}>N/A — sedated</option>
+            </select></div>
+        </div>
+
+        <!-- BREATHING / WOB -->
+        <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 6px">Work of Breathing</div>
+        <div class="card-grid" style="margin-bottom:12px">
+          <div class="card-field"><label>Patient RR (actual)</label>
+            <input type="number" id="p${p.id}-ptRr" value="${d.ptRr||''}" placeholder="18" onchange="saveField(${p.id})"></div>
+          <div class="card-field"><label>WOB</label>
+            <select id="p${p.id}-wob" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="Easy / unlabored"${d.wob==='Easy / unlabored'?' selected':''}>Easy / unlabored</option>
+              <option value="Mildly increased"${d.wob==='Mildly increased'?' selected':''}>Mildly increased</option>
+              <option value="Moderately increased"${d.wob==='Moderately increased'?' selected':''}>Moderately increased</option>
+              <option value="Severely increased"${d.wob==='Severely increased'?' selected':''}>Severely increased</option>
+              <option value="Accessory muscle use"${d.wob==='Accessory muscle use'?' selected':''}>Accessory muscle use</option>
+              <option value="Paradoxical"${d.wob==='Paradoxical'?' selected':''}>Paradoxical / see-saw</option>
+            </select></div>
+          <div class="card-field"><label>Breath pattern</label>
+            <select id="p${p.id}-breathPattern" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="Regular"${d.breathPattern==='Regular'?' selected':''}>Regular</option>
+              <option value="Irregular"${d.breathPattern==='Irregular'?' selected':''}>Irregular</option>
+              <option value="Cheyne-Stokes"${d.breathPattern==='Cheyne-Stokes'?' selected':''}>Cheyne-Stokes</option>
+              <option value="Kussmaul"${d.breathPattern==='Kussmaul'?' selected':''}>Kussmaul</option>
+              <option value="Biot's"${d.breathPattern==="Biot's"?' selected':''}>Biot's</option>
+              <option value="Apneic episodes"${d.breathPattern==='Apneic episodes'?' selected':''}>Apneic episodes</option>
+            </select></div>
+          <div class="card-field"><label>HOB elevation</label>
+            <select id="p${p.id}-hob" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="≥30°"${d.hob==='≥30°'?' selected':''}>≥30° (recommended)</option>
+              <option value="45°"${d.hob==='45°'?' selected':''}>45°</option>
+              <option value="Flat"${d.hob==='Flat'?' selected':''}>Flat / contraindicated</option>
+              <option value="Prone"${d.hob==='Prone'?' selected':''}>Prone positioning</option>
+              <option value="Lateral"${d.hob==='Lateral'?' selected':''}>Lateral</option>
+            </select></div>
+        </div>
+
+        <!-- AUSCULTATION -->
+        <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 6px">Auscultation</div>
+        <div style="margin-bottom:12px">
+          <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:4px">
+            ${(()=>{
+              const opts=[
+                ['clear','Clear bilat'],
+                ['diminished-bilateral','Diminished bilat'],
+                ['diminished-left','Diminished L'],
+                ['diminished-right','Diminished R'],
+                ['crackles-bilateral','Crackles bilat'],
+                ['crackles-left','Crackles L'],
+                ['crackles-right','Crackles R'],
+                ['wheeze-exp','Wheeze — exp'],
+                ['wheeze-insp','Wheeze — insp'],
+                ['rhonchi','Rhonchi'],
+                ['stridor','Stridor'],
+                ['absent-left','Absent L'],
+                ['absent-right','Absent R'],
+                ['pleural-rub','Pleural rub']
+              ];
+              const sel=(d.breathSounds||'').split(',').map(s=>s.trim()).filter(Boolean);
+              return opts.map(([v,label])=>{
+                const active=sel.includes(v);
+                return `<button type="button" onclick="toggleBreathSound(${p.id},'${v}',this)" style="padding:4px 9px;font-size:11px;border-radius:14px;border:1px solid ${active?'#1a4a8a':'#ccc'};background:${active?'#1a4a8a':'#fff'};color:${active?'#fff':'#555'};cursor:pointer;white-space:nowrap;font-weight:${active?'600':'400'}">${label}</button>`;
+              }).join('');
+            })()}
+          </div>
+          <input type="hidden" id="p${p.id}-breathSounds" value="${d.breathSounds||''}">
+          <div style="font-size:10px;color:#bbb;margin-top:3px">Tap to select — multiple allowed</div>
+        </div>
+
+        <!-- SECRETIONS / AIRWAY CLEARANCE -->
+        <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 6px">Secretions &amp; Airway Clearance</div>
+        <div class="card-grid" style="margin-bottom:12px">
+          <div class="card-field"><label>Amount</label>
+            <select id="p${p.id}-secAmount" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="None"${d.secAmount==='None'?' selected':''}>None</option>
+              <option value="Scant"${d.secAmount==='Scant'?' selected':''}>Scant</option>
+              <option value="Moderate"${d.secAmount==='Moderate'?' selected':''}>Moderate</option>
+              <option value="Copious"${d.secAmount==='Copious'?' selected':''}>Copious</option>
+            </select></div>
+          <div class="card-field"><label>Color</label>
+            <select id="p${p.id}-secColor" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="Clear"${d.secColor==='Clear'?' selected':''}>Clear</option>
+              <option value="White"${d.secColor==='White'?' selected':''}>White</option>
+              <option value="Yellow"${d.secColor==='Yellow'?' selected':''}>Yellow</option>
+              <option value="Green"${d.secColor==='Green'?' selected':''}>Green</option>
+              <option value="Tan/Brown"${d.secColor==='Tan/Brown'?' selected':''}>Tan / Brown</option>
+              <option value="Blood-tinged"${d.secColor==='Blood-tinged'?' selected':''}>Blood-tinged</option>
+              <option value="Bloody/frank"${d.secColor==='Bloody/frank'?' selected':''}>Bloody / frank</option>
+            </select></div>
+          <div class="card-field"><label>Consistency</label>
+            <select id="p${p.id}-secConsistency" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="Thin"${d.secConsistency==='Thin'?' selected':''}>Thin / watery</option>
+              <option value="Moderate"${d.secConsistency==='Moderate'?' selected':''}>Moderate</option>
+              <option value="Thick"${d.secConsistency==='Thick'?' selected':''}>Thick</option>
+              <option value="Tenacious"${d.secConsistency==='Tenacious'?' selected':''}>Tenacious / mucus plugs</option>
+              <option value="Frothy"${d.secConsistency==='Frothy'?' selected':''}>Frothy</option>
+            </select></div>
+          <div class="card-field"><label>Cough strength</label>
+            <select id="p${p.id}-coughStrength" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="Strong"${d.coughStrength==='Strong'?' selected':''}>Strong / effective</option>
+              <option value="Weak"${d.coughStrength==='Weak'?' selected':''}>Weak</option>
+              <option value="Absent"${d.coughStrength==='Absent'?' selected':''}>Absent</option>
+              <option value="N/A — paralyzed"${d.coughStrength==='N/A — paralyzed'?' selected':''}>N/A — paralyzed</option>
+            </select></div>
+        </div>
+
+        <!-- OXYGENATION -->
+        <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 6px">Oxygenation</div>
+        <div class="card-grid" style="margin-bottom:12px">
+          <div class="card-field"><label>SpO&#8322;</label>
+            <input type="number" id="p${p.id}-spo2" value="${d.spo2||''}" placeholder="96" onchange="saveField(${p.id})"></div>
+          <div class="card-field"><label>SpO&#8322; trend</label>
+            <select id="p${p.id}-sfRatio" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="Stable"${d.sfRatio==='Stable'?' selected':''}>Stable</option>
+              <option value="Improving"${d.sfRatio==='Improving'?' selected':''}>Improving</option>
+              <option value="Declining"${d.sfRatio==='Declining'?' selected':''}>Declining</option>
+              <option value="Labile"${d.sfRatio==='Labile'?' selected':''}>Labile / fluctuating</option>
+            </select></div>
+        </div>
+
+        <!-- COMFORT / SYNCHRONY -->
+        <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 6px">Comfort &amp; Synchrony</div>
+        <div class="card-grid" style="margin-bottom:10px">
+          <div class="card-field"><label>Pain score (0–10)</label>
+            <select id="p${p.id}-painScore" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              ${[0,1,2,3,4,5,6,7,8,9,10].map(n=>`<option value="${n}"${d.painScore===String(n)?' selected':''}>${n}${n===0?' — None':n<=3?' — Mild':n<=6?' — Moderate':' — Severe'}</option>`).join('')}
+              <option value="Unable to assess"${d.painScore==='Unable to assess'?' selected':''}>Unable to assess</option>
+            </select></div>
+          <div class="card-field"><label>Overall comfort</label>
+            <select id="p${p.id}-comfort" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="Comfortable"${d.comfort==='Comfortable'?' selected':''}>Comfortable</option>
+              <option value="Mild discomfort"${d.comfort==='Mild discomfort'?' selected':''}>Mild discomfort</option>
+              <option value="Distressed"${d.comfort==='Distressed'?' selected':''}>Distressed</option>
+              <option value="Diaphoretic"${d.comfort==='Diaphoretic'?' selected':''}>Diaphoretic</option>
+            </select></div>
+          <div class="card-field"><label>Vent synchrony</label>
+            <select id="p${p.id}-sync" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="Synchronous"${d.sync==='Synchronous'?' selected':''}>Synchronous</option>
+              <option value="Mild dyssynchrony"${d.sync==='Mild dyssynchrony'?' selected':''}>Mild dyssynchrony</option>
+              <option value="Dyssynchronous"${d.sync==='Dyssynchronous'?' selected':''}>Dyssynchronous</option>
+              <option value="Fighting vent"${d.sync==='Fighting vent'?' selected':''}>Fighting vent</option>
+              <option value="N/A"${d.sync==='N/A'?' selected':''}>N/A (spontaneous)</option>
+            </select></div>
+          <div class="card-field"><label>Tolerance</label>
+            <select id="p${p.id}-tolerance" onchange="saveField(${p.id})">
+              <option value="">—</option>
+              <option value="Tolerating well"${d.tolerance==='Tolerating well'?' selected':''}>Tolerating well</option>
+              <option value="Tolerating — prn given"${d.tolerance==='Tolerating — prn given'?' selected':''}>Tolerating — PRN given</option>
+              <option value="Agitated"${d.tolerance==='Agitated'?' selected':''}>Agitated</option>
+              <option value="Intolerant"${d.tolerance==='Intolerant'?' selected':''}>Intolerant</option>
+            </select></div>
+        </div>
+
+        <!-- DIAGNOSTICS -->
+        <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 6px">Diagnostics</div>
+        <div class="card-grid" style="margin-bottom:12px">
+          <div class="card-field full"><label>CXR findings</label>
+            <input type="text" id="p${p.id}-cxr" value="${d.cxr||''}" placeholder="e.g. bilateral infiltrates, improving, no acute change" onchange="saveField(${p.id})"></div>
+        </div>
+
+        <!-- ASSESSMENT FREE TEXT -->
+        <div class="card-field full" style="margin-top:4px">
+          <label>Assessment notes</label>
+          <textarea id="p${p.id}-assessNote" placeholder="Clinical impressions, changes since last check, concerns, plan…" onchange="saveField(${p.id})" style="min-height:54px">${d.assessNote||''}</textarea>
+        </div>
+
+        <!-- LEGACY HIDDEN FIELD — keeps mentation in saveField list for handoff compat -->
+        <input type="hidden" id="p${p.id}-mentation" value="${d.mentation||d.mentalStatus||''}">
+        </div><!-- end assess-body -->
+      </div><!-- end Assessment section -->
+
+      <!-- ══════════════════════════════════════════ -->
+      <!-- DEVICE & RESPIRATORY SUPPORT              -->
+      <!-- ══════════════════════════════════════════ -->
+      <div class="card-section" style="border:1px solid #e5e5e2;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:12px">
+        <div class="card-section-title" style="margin-bottom:10px">&#128168; Respiratory Support</div>
+
+        <!-- COMPACT: device selector + inline O2 fields -->
+        <div class="device-change-row" style="margin-bottom:${(isVent||isNIV||isTrach||isHFNC)?'0':'0'}">
           <label>Device</label>
           <select id="p${p.id}-device-sel" onchange="changeDevice(${p.id})">
             <option value="vent"${p.device==='vent'?' selected':''}>Ventilator</option>
@@ -2195,15 +2510,214 @@ function buildCard(p){
             <option value="trach"${p.device==='trach'?' selected':''}>Trach (no vent)</option>
           </select>
         </div>
-        <div class="card-grid">
-          ${modeField}
-          ${sbtRow}
-          ${maskField}
+
+        ${(isO2||isHFNC)?`
+        <!-- Simple O2 / HFNC: just flow + FiO2/target inline, no panel needed -->
+        <div class="card-grid" style="margin-top:10px">
           ${flowField}
-          <div class="card-field"><label>SpO&#8322; at check</label>
-            <input type="number" id="p${p.id}-spo2" value="${d.spo2||''}" placeholder="96 %" onchange="saveField(${p.id})"></div>
-        </div>
-      </div>
+        </div>`:''}
+
+        ${(isVent||isNIV||isTrach)?`
+        <!-- COLLAPSIBLE SETTINGS PANEL for Vent / BiPAP / Trach -->
+        <div style="border-top:1px solid #f0efe8;margin-top:12px;padding-top:8px">
+          <div onclick="toggleVentSettings(${p.id})" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;padding:2px 0 4px">
+            <span style="font-size:10px;font-weight:700;color:#1a4a8a;text-transform:uppercase;letter-spacing:0.5px">&#9660; ${isVent?'Ventilator':'BiPAP / Trach'} settings &amp; details</span>
+            <span id="vent-settings-tog-${p.id}" style="font-size:11px;color:#aaa;transition:transform 0.2s;display:inline-block;transform:${(d.ventSettingsOpen!==false)?'rotate(0deg)':'rotate(-90deg)'}">&#9660;</span>
+          </div>
+          <div id="vent-settings-body-${p.id}" style="display:${(d.ventSettingsOpen!==false)?'block':'none'}">
+
+            <!-- MODE + SBT + MASK -->
+            ${(modeField||sbtRow||maskField)?`
+            <div class="card-grid" style="margin-top:8px">
+              ${modeField}
+              ${sbtRow}
+              ${maskField}
+            </div>`:''}
+
+            <!-- DAYS ON DEVICE -->
+            <div class="card-grid" style="margin-top:8px">
+              <div class="card-field"><label>Days on device</label>
+                <input type="number" id="p${p.id}-daysOnDevice" value="${d.daysOnDevice||''}" placeholder="3" onchange="saveField(${p.id})"></div>
+            </div>
+
+            <!-- VENT CONVENTIONAL SETTINGS -->
+            ${isVent?`
+            <div id="vent-conv-${p.id}" style="${isAPRV?'display:none':''}">
+              <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 6px">Ventilator settings</div>
+              <div class="card-grid">
+                <div class="card-field"><label>Set rate (bpm)</label>
+                  <input type="number" id="p${p.id}-setRate" value="${d.setRate||''}" placeholder="14" onchange="saveField(${p.id})"></div>
+                <div class="card-field"><label>Set Vt (mL)</label>
+                  <input type="number" id="p${p.id}-setVt" value="${d.setVt||''}" placeholder="450" onchange="saveField(${p.id})"></div>
+                <div class="card-field"><label>FiO&#8322;</label>
+                  <input type="text" id="p${p.id}-ventFio2" value="${d.ventFio2||''}" placeholder="0.40" onchange="saveField(${p.id})"></div>
+                <div class="card-field"><label>PEEP (cmH&#8322;O)</label>
+                  <input type="number" id="p${p.id}-peep" value="${d.peep||''}" placeholder="5" onchange="saveField(${p.id})"></div>
+                <div class="card-field"><label>I-time (s)</label>
+                  <input type="number" id="p${p.id}-itime" value="${d.itime||''}" placeholder="1.0" step="0.1" onchange="saveField(${p.id})"></div>
+                <div class="card-field"><label>Pressure support</label>
+                  <input type="number" id="p${p.id}-ps" value="${d.ps||''}" placeholder="10" onchange="saveField(${p.id})"></div>
+                <div class="card-field"><label>Plateau (cmH&#8322;O)</label>
+                  <input type="number" id="p${p.id}-plateau" value="${d.plateau||''}" placeholder="measured" onchange="saveField(${p.id})"></div>
+                <div class="card-field"><label>Driving P (calc)</label>
+                  <input type="text" value="${(d.plateau&&d.peep)?(parseInt(d.plateau)-parseInt(d.peep))+' cmH\u2082O':''}" placeholder="Plat \u2212 PEEP" readonly style="background:#f0efe8;color:#555"></div>
+              </div>
+            </div>
+
+            <!-- APRV SETTINGS -->
+            <div id="vent-aprv-${p.id}" style="${isAPRV?'':'display:none'}">
+              <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 6px">APRV settings</div>
+              <div class="info-box neutral" style="font-size:11px;padding:7px 10px;margin-bottom:8px">&#9432; T-low termination target: 50&#8211;75% of peak expiratory flow.</div>
+              <div class="card-grid">
+                <div class="card-field"><label>P-high (cmH&#8322;O)</label>
+                  <input type="number" id="p${p.id}-aprvPhigh" value="${d.aprvPhigh||''}" placeholder="25" onchange="saveField(${p.id})"></div>
+                <div class="card-field"><label>P-low (cmH&#8322;O)</label>
+                  <input type="number" id="p${p.id}-aprvPlow" value="${d.aprvPlow||''}" placeholder="0" onchange="saveField(${p.id})"></div>
+                <div class="card-field"><label>T-high (s)</label>
+                  <input type="number" id="p${p.id}-aprvThigh" value="${d.aprvThigh||''}" placeholder="4.5" step="0.1" onchange="saveField(${p.id})"></div>
+                <div class="card-field"><label>T-low (s)</label>
+                  <input type="number" id="p${p.id}-aprvTlow" value="${d.aprvTlow||''}" placeholder="0.5" step="0.05" onchange="saveField(${p.id})"></div>
+                <div class="card-field"><label>FiO&#8322;</label>
+                  <input type="text" id="p${p.id}-aprvFio2" value="${d.aprvFio2||''}" placeholder="0.50" onchange="saveField(${p.id})"></div>
+                <div class="card-field"><label>Calc rate (bpm)</label>
+                  <input type="text" value="${(d.aprvThigh&&d.aprvTlow)?Math.round(60/(parseFloat(d.aprvThigh)+parseFloat(d.aprvTlow)))+' bpm':''}" placeholder="auto" readonly style="background:#f0efe8;color:#555"></div>
+              </div>
+            </div>
+
+            <!-- ALARM SETTINGS -->
+            <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 6px">&#9888;&#65039; Alarm settings</div>
+            <div style="font-size:10px;color:#aaa;margin-bottom:8px;font-style:italic">Enter set alarm limits for charting reference</div>
+            <div class="card-grid">
+              <div class="card-field"><label>High pressure</label>
+                <input type="number" id="p${p.id}-alarmPhi" value="${d.alarmPhi||''}" placeholder="40" onchange="saveField(${p.id})"></div>
+              <div class="card-field"><label>Low pressure</label>
+                <input type="number" id="p${p.id}-alarmPlo" value="${d.alarmPlo||''}" placeholder="5" onchange="saveField(${p.id})"></div>
+              <div class="card-field"><label>High PEEP</label>
+                <input type="number" id="p${p.id}-alarmPeepHi" value="${d.alarmPeepHi||''}" placeholder="20" onchange="saveField(${p.id})"></div>
+              <div class="card-field"><label>Low PEEP</label>
+                <input type="number" id="p${p.id}-alarmPeepLo" value="${d.alarmPeepLo||''}" placeholder="3" onchange="saveField(${p.id})"></div>
+              <div class="card-field"><label>High Vt (mL)</label>
+                <input type="number" id="p${p.id}-alarmVtHi" value="${d.alarmVtHi||''}" placeholder="600" onchange="saveField(${p.id})"></div>
+              <div class="card-field"><label>Low Vt (mL)</label>
+                <input type="number" id="p${p.id}-alarmVtLo" value="${d.alarmVtLo||''}" placeholder="200" onchange="saveField(${p.id})"></div>
+              <div class="card-field"><label>High Ve (L/min)</label>
+                <input type="number" id="p${p.id}-alarmVeHi" value="${d.alarmVeHi||''}" placeholder="15" step="0.5" onchange="saveField(${p.id})"></div>
+              <div class="card-field"><label>Low Ve (L/min)</label>
+                <input type="number" id="p${p.id}-alarmVeLo" value="${d.alarmVeLo||''}" placeholder="3" step="0.5" onchange="saveField(${p.id})"></div>
+              <div class="card-field"><label>High RR (bpm)</label>
+                <input type="number" id="p${p.id}-alarmRrHi" value="${d.alarmRrHi||''}" placeholder="35" onchange="saveField(${p.id})"></div>
+              <div class="card-field"><label>Low RR (bpm)</label>
+                <input type="number" id="p${p.id}-alarmRrLo" value="${d.alarmRrLo||''}" placeholder="6" onchange="saveField(${p.id})"></div>
+            </div>`:''}
+
+            <!-- BIPAP SETTINGS -->
+            ${isNIV?`
+            <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 6px">BiPAP / CPAP settings</div>
+            <div class="card-grid">
+              <div class="card-field"><label>IPAP (cmH&#8322;O)</label>
+                <input type="number" id="p${p.id}-ipap" value="${d.ipap||''}" placeholder="12" onchange="saveField(${p.id})"></div>
+              <div class="card-field"><label>EPAP (cmH&#8322;O)</label>
+                <input type="number" id="p${p.id}-epap" value="${d.epap||''}" placeholder="5" onchange="saveField(${p.id})"></div>
+              <div class="card-field"><label>PS (IPAP&#8722;EPAP)</label>
+                <input type="text" value="${(d.ipap&&d.epap)?(parseInt(d.ipap)-parseInt(d.epap))+' cmH\u2082O':''}" placeholder="auto-calc" readonly style="background:#f0efe8;color:#555"></div>
+              <div class="card-field"><label>Backup rate</label>
+                <input type="number" id="p${p.id}-bipapRate" value="${d.bipapRate||''}" placeholder="bpm" onchange="saveField(${p.id})"></div>
+              <div class="card-field"><label>I-time (s)</label>
+                <input type="number" id="p${p.id}-bipapItime" value="${d.bipapItime||''}" placeholder="1.0" step="0.1" onchange="saveField(${p.id})"></div>
+              <div class="card-field"><label>FiO&#8322;</label>
+                <input type="text" id="p${p.id}-bipapFio2" value="${d.bipapFio2||''}" placeholder="0.35" onchange="saveField(${p.id})"></div>
+            </div>`:''}
+
+            <!-- AIRWAY — ETT or Trach toggle -->
+            ${(isVent)?`
+            <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 6px">Airway</div>
+            <div class="device-change-row" style="margin-bottom:10px">
+              <label>Airway type</label>
+              <select id="p${p.id}-ventAirway" onchange="toggleVentAirway(${p.id})">
+                <option value="ett"${(d.ventAirway||'ett')==='ett'?' selected':''}>ETT (endotracheal tube)</option>
+                <option value="trach"${d.ventAirway==='trach'?' selected':''}>Tracheostomy</option>
+              </select>
+            </div>
+            <!-- ETT fields -->
+            <div id="vent-ett-block-${p.id}" style="display:${d.ventAirway==='trach'?'none':''}">
+              <div class="card-grid">
+                <div class="card-field"><label>ETT position (cm at lip)</label>
+                  <input type="text" id="p${p.id}-ett" value="${d.ett||''}" placeholder="22 cm" onchange="saveField(${p.id})"></div>
+                <div class="card-field"><label>Cuff pressure (cmH&#8322;O)</label>
+                  <input type="number" id="p${p.id}-cuff" value="${d.cuff||''}" placeholder="25" onchange="saveField(${p.id})"></div>
+              </div>
+            </div>
+            <!-- Trach fields (shown when vent+trach selected) -->
+            <div id="vent-trach-block-${p.id}" style="display:${d.ventAirway==='trach'?'':'none'}">
+              <div class="card-grid">
+                <div class="card-field"><label>Trach size / type</label>
+                  <input type="text" id="p${p.id}-trachSize" value="${d.trachSize||''}" placeholder="e.g. 8.0 Shiley cuffed, Bivona XLT" onchange="saveField(${p.id})"></div>
+                <div class="card-field"><label>Cuff status</label>
+                  <select id="p${p.id}-trachCuffStatus" onchange="saveField(${p.id})">
+                    <option value="">—</option>
+                    <option value="Inflated"${d.trachCuffStatus==='Inflated'?' selected':''}>Inflated</option>
+                    <option value="Deflated"${d.trachCuffStatus==='Deflated'?' selected':''}>Deflated</option>
+                    <option value="Uncuffed tube"${d.trachCuffStatus==='Uncuffed tube'?' selected':''}>Uncuffed tube</option>
+                  </select></div>
+                <div class="card-field"><label>Passy Muir Valve</label>
+                  <select id="p${p.id}-trachPmv" onchange="saveField(${p.id})">
+                    <option value="">—</option>
+                    <option value="Yes — in place"${d.trachPmv==='Yes — in place'?' selected':''}>Yes — in place</option>
+                    <option value="Yes — ordered, not placed"${d.trachPmv==='Yes — ordered, not placed'?' selected':''}>Yes — ordered, not placed</option>
+                    <option value="No"${d.trachPmv==='No'?' selected':''}>No</option>
+                  </select></div>
+                <div class="card-field"><label>Obturator at bedside</label>
+                  <select id="p${p.id}-trachObturator" onchange="saveField(${p.id})">
+                    <option value="">—</option>
+                    <option value="Yes"${d.trachObturator==='Yes'?' selected':''}>Yes ✓</option>
+                    <option value="No"${d.trachObturator==='No'?' selected':''}>No ✗</option>
+                  </select></div>
+              </div>
+            </div>`:''}
+
+            <!-- TRACH-ONLY AIRWAY (device=trach, no vent) — handled separately below -->
+            ${(isTrach&&!isVent)?`
+            <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 6px">Airway</div>
+            <div class="card-grid">
+              <div class="card-field"><label>Trach size / type</label>
+                <input type="text" id="p${p.id}-trachSize" value="${d.trachSize||''}" placeholder="e.g. 8.0 Shiley cuffed, Bivona XLT" onchange="saveField(${p.id})"></div>
+              <div class="card-field"><label>Cuff status</label>
+                <select id="p${p.id}-trachCuffStatus" onchange="saveField(${p.id})">
+                  <option value="">—</option>
+                  <option value="Inflated"${d.trachCuffStatus==='Inflated'?' selected':''}>Inflated</option>
+                  <option value="Deflated"${d.trachCuffStatus==='Deflated'?' selected':''}>Deflated</option>
+                  <option value="Uncuffed tube"${d.trachCuffStatus==='Uncuffed tube'?' selected':''}>Uncuffed tube</option>
+                </select></div>
+              <div class="card-field"><label>Passy Muir Valve</label>
+                <select id="p${p.id}-trachPmv" onchange="saveField(${p.id})">
+                  <option value="">—</option>
+                  <option value="Yes — in place"${d.trachPmv==='Yes — in place'?' selected':''}>Yes — in place</option>
+                  <option value="Yes — ordered, not placed"${d.trachPmv==='Yes — ordered, not placed'?' selected':''}>Yes — ordered, not placed</option>
+                  <option value="No"${d.trachPmv==='No'?' selected':''}>No</option>
+                </select></div>
+              <div class="card-field"><label>Obturator at bedside</label>
+                <select id="p${p.id}-trachObturator" onchange="saveField(${p.id})">
+                  <option value="">—</option>
+                  <option value="Yes"${d.trachObturator==='Yes'?' selected':''}>Yes ✓</option>
+                  <option value="No"${d.trachObturator==='No'?' selected':''}>No ✗</option>
+                </select></div>
+            </div>`:''}
+
+            <!-- HUMIDITY & CIRCUIT -->
+            ${heaterField?`
+            <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 6px">Humidity &amp; circuit</div>
+            <div class="card-grid">${heaterField}</div>`:''}
+
+            <!-- EQUIPMENT IMAGES -->
+            <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 6px">&#128247; Equipment images</div>
+            <div class="img-slots">${imgSlots}</div>
+            <div class="img-limit-note" style="margin-top:6px">Capture vent screens or equipment. Session limit: ${totalImages}/${MAX_IMG} &middot; Auto-cleared after 14 hours.</div>
+
+          </div><!-- end vent-settings-body -->
+        </div><!-- end collapsible wrapper -->
+        `:''}
+
+      </div><!-- end Respiratory Support section -->
 
       <!-- THERAPY BLOCK -->
       <div class="card-section">
@@ -2247,75 +2761,13 @@ function buildCard(p){
         <input type="hidden" id="p${p.id}-therapies" value="${d.therapies||''}">
       </div>
 
-      <!-- EQUIPMENT SETTINGS (vent, APRV, BiPAP) -->
-      ${ventSettings}
-      ${bipapSettings}
-
-      <!-- HEATER / CIRCUIT -->
-      ${heaterField?`<div class="card-section"><div class="card-section-title">Humidity &amp; circuit</div><div class="card-grid">${heaterField}</div></div>`:''}
-
-      <!-- AIRWAY -->
-      ${airway}
-
-      <!-- PATIENT STATUS -->
-      <div class="card-section">
-        <div class="card-section-title">Patient status</div>
-        <div class="card-grid">
-          <div class="card-field"><label>Mentation</label>
-            <select id="p${p.id}-mentation" onchange="saveField(${p.id})">
-              <option value="">—</option>
-              <option value="alert"${d.mentation==='alert'?' selected':''}>Alert &amp; oriented</option>
-              <option value="confused"${d.mentation==='confused'?' selected':''}>Confused</option>
-              <option value="arousable-v"${d.mentation==='arousable-v'?' selected':''}>Arousable to voice</option>
-              <option value="arousable-s"${d.mentation==='arousable-s'?' selected':''}>Arousable to stim</option>
-              <option value="obtunded"${d.mentation==='obtunded'?' selected':''}>Obtunded</option>
-              <option value="unresponsive"${d.mentation==='unresponsive'?' selected':''}>Unresponsive</option>
-            </select></div>
-          <div class="card-field"><label>Tolerance / sync</label>
-            <select id="p${p.id}-tolerance" onchange="saveField(${p.id})">
-              <option value="">—</option>
-              <option value="comfortable"${d.tolerance==='comfortable'?' selected':''}>Comfortable</option>
-              <option value="agitated"${d.tolerance==='agitated'?' selected':''}>Agitated</option>
-              <option value="dysync"${d.tolerance==='dysync'?' selected':''}>Dyssynchronous</option>
-              <option value="intolerant"${d.tolerance==='intolerant'?' selected':''}>Intolerant</option>
-            </select></div>
-          <div class="card-field full">
-            <label>Breath sounds <span style="font-weight:400;text-transform:none;color:#aaa;font-size:10px">(tap to select — multiple allowed)</span></label>
-            <div id="p${p.id}-breathSounds-btns" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px">
-              ${(()=>{
-                const opts=[
-                  ['clear','Clear bilat'],
-                  ['diminished-bilateral','Diminished bilat'],
-                  ['diminished-left','Diminished L'],
-                  ['diminished-right','Diminished R'],
-                  ['crackles-bilateral','Crackles bilat'],
-                  ['crackles-left','Crackles L'],
-                  ['crackles-right','Crackles R'],
-                  ['wheeze-exp','Wheeze — exp'],
-                  ['wheeze-insp','Wheeze — insp'],
-                  ['rhonchi','Rhonchi'],
-                  ['stridor','Stridor'],
-                  ['absent-left','Absent L'],
-                  ['absent-right','Absent R']
-                ];
-                const sel=(d.breathSounds||'').split(',').map(s=>s.trim()).filter(Boolean);
-                return opts.map(([v,label])=>{
-                  const active=sel.includes(v);
-                  return `<button type="button" onclick="toggleBreathSound(${p.id},'${v}',this)" style="padding:4px 9px;font-size:11px;border-radius:14px;border:1px solid ${active?'#1a4a8a':'#ccc'};background:${active?'#1a4a8a':'#fff'};color:${active?'#fff':'#555'};cursor:pointer;white-space:nowrap;font-weight:${active?'600':'400'}">${label}</button>`;
-                }).join('');
-              })()}
-            </div>
-            <input type="hidden" id="p${p.id}-breathSounds" value="${d.breathSounds||''}">
-          </div>
-        </div>
-      </div>
-
-      <!-- IMAGES -->
+      <!-- IMAGES for simple O2/HFNC patients (vent patients get images inside settings panel) -->
+      ${(!isVent&&!isNIV&&!isTrach)?`
       <div class="img-section">
         <div class="card-section-title">&#128247; Equipment images (tap to capture)</div>
         <div class="img-slots">${imgSlots}</div>
-        <div class="img-limit-note">&#128247; Capture images of ventilator screens, BiPAP displays, or other equipment for shift documentation and charting reference. Session limit: ${totalImages}/${MAX_IMG} &middot; Auto-cleared after 14 hours.</div>
-      </div>
+        <div class="img-limit-note">Session limit: ${totalImages}/${MAX_IMG} &middot; Auto-cleared after 14 hours.</div>
+      </div>`:''}
 
       <!-- ACTIONS -->
       <div class="card-actions">
@@ -2389,7 +2841,7 @@ function buildHandoffText(){
     'crackles-bilateral':'Crackles bilat','crackles-left':'Crackles L',
     'crackles-right':'Crackles R','wheeze-exp':'Wheeze (exp)',
     'wheeze-insp':'Wheeze (insp)','rhonchi':'Rhonchi','stridor':'Stridor',
-    'absent-left':'Absent L','absent-right':'Absent R'};
+    'absent-left':'Absent L','absent-right':'Absent R','pleural-rub':'Pleural rub'};
   const thLabels={neb:'Neb 1',neb2:'Neb 2',mdi:'MDI 1',mdi2:'MDI 2',is:'IS',flutter:'Flutter',cpt:'CPT/Vest'};
 
   patients.forEach((p,i)=>{
@@ -2430,7 +2882,16 @@ function buildHandoffText(){
           txt+='\n';
         }
       }
-      if(d.ett)txt+=`   Airway: ${d.ett}${d.cuff?' | Cuff '+d.cuff+' cmH\u2082O':''}${d.secretions&&d.secretions!=='none'?' | Secretions: '+d.secretions:''}\n`;
+      if(d.ett)txt+=`   Airway: ${d.ett}${d.cuff?' | Cuff '+d.cuff+' cmH\u2082O':''}\n`;
+      // Trach fields (vent+trach or trach-only)
+      if(d.trachSize||d.trachCuffStatus||d.trachPmv){
+        const tp=[];
+        if(d.trachSize)tp.push(d.trachSize);
+        if(d.trachCuffStatus)tp.push(`Cuff: ${d.trachCuffStatus}`);
+        if(d.trachPmv&&d.trachPmv!=='No')tp.push(`PMV: ${d.trachPmv}`);
+        if(d.trachObturator)tp.push(`Obturator: ${d.trachObturator}`);
+        txt+=`   Trach: ${tp.join(' | ')}\n`;
+      }
     }
     if(isBipapCpap&&(d.ipap||d.epap)){
       txt+=`   Settings: IPAP ${d.ipap||'?'} / EPAP ${d.epap||'?'} cmH\u2082O`;
@@ -2455,13 +2916,55 @@ function buildHandoffText(){
       txt+='\n';
     }
 
-    // SpO2 / Mentation / Tolerance
-    if(d.spo2||d.mentation||(d.tolerance&&d.tolerance!=='comfortable')){
-      const parts=[];
-      if(d.spo2)parts.push(`SpO\u2082 ${d.spo2}%`);
-      if(d.mentation)parts.push(d.mentation);
-      if(d.tolerance&&d.tolerance!=='comfortable')parts.push(d.tolerance);
-      txt+=`   Status: ${parts.join(' | ')}\n`;
+    // SpO2 / Mentation / Tolerance — expanded assessment block
+    const hasNeuro = d.rass||d.mentalStatus||d.orientation||d.followsCommands;
+    const hasWob = d.ptRr||d.wob||d.breathPattern||d.hob;
+    const hasSec = d.secAmount||d.secColor||d.secConsistency||d.coughStrength;
+    const hasComfort = d.painScore||d.comfort||d.sync||(d.tolerance&&d.tolerance!=='Tolerating well');
+
+    if(hasNeuro){
+      const np=[];
+      if(d.rass)np.push(`RASS ${d.rass}`);
+      if(d.mentalStatus)np.push(d.mentalStatus);
+      if(d.orientation)np.push(`Oriented ${d.orientation}`);
+      if(d.followsCommands)np.push(`Commands: ${d.followsCommands}`);
+      txt+=`   Neuro: ${np.join(' | ')}\n`;
+    } else if(d.mentation) {
+      txt+=`   Mentation: ${d.mentation}\n`;
+    }
+
+    if(hasWob){
+      const wp=[];
+      if(d.ptRr)wp.push(`RR ${d.ptRr}`);
+      if(d.wob)wp.push(d.wob);
+      if(d.breathPattern&&d.breathPattern!=='Regular')wp.push(d.breathPattern);
+      if(d.hob)wp.push(`HOB ${d.hob}`);
+      txt+=`   WOB: ${wp.join(' | ')}\n`;
+    }
+
+    if(d.spo2||(d.sfRatio&&d.sfRatio!=='Stable')){
+      const op=[];
+      if(d.spo2)op.push(`SpO\u2082 ${d.spo2}%`);
+      if(d.sfRatio)op.push(d.sfRatio);
+      txt+=`   Oxygenation: ${op.join(' — ')}\n`;
+    }
+
+    if(hasComfort){
+      const cp=[];
+      if(d.painScore)cp.push(`Pain ${d.painScore}/10`);
+      if(d.comfort&&d.comfort!=='Comfortable')cp.push(d.comfort);
+      if(d.sync&&d.sync!=='Synchronous'&&d.sync!=='N/A')cp.push(d.sync);
+      if(d.tolerance&&d.tolerance!=='Tolerating well')cp.push(d.tolerance);
+      if(cp.length)txt+=`   Comfort: ${cp.join(' | ')}\n`;
+    }
+
+    if(hasSec){
+      const sp=[];
+      if(d.secAmount)sp.push(d.secAmount);
+      if(d.secColor)sp.push(d.secColor);
+      if(d.secConsistency)sp.push(d.secConsistency);
+      if(d.coughStrength)sp.push(`Cough: ${d.coughStrength}`);
+      txt+=`   Secretions: ${sp.join(' / ')}\n`;
     }
 
     // Breath sounds
@@ -2488,6 +2991,9 @@ function buildHandoffText(){
     // Clinical note
     if(d.clinicalNote)txt+=`   \u201c${d.clinicalNote}\u201d\n`;
 
+    // Assessment note
+    if(d.assessNote)txt+=`   Assessment: ${d.assessNote}\n`;
+
     txt+='\n';
   });
   txt+=`${'─'.repeat(36)}\nRTLine v1.0 — No PHI. Room numbers only.`;
@@ -2508,48 +3014,37 @@ function closeHandoff(e){
   document.getElementById('handoff-overlay').style.display='none';
 }
 
-function copyHandoff(){
-  const txt=buildHandoffText();
-  navigator.clipboard.writeText(txt).then(()=>{
-    const el=document.getElementById('handoff-copy-confirm');
-    el.textContent='✓ Copied to clipboard';
-    setTimeout(()=>el.textContent='',2200);
-  }).catch(()=>{
-    // fallback for older browsers
-    const ta=document.createElement('textarea');
-    ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
-    document.body.appendChild(ta);ta.select();
-    document.execCommand('copy');document.body.removeChild(ta);
-    const el=document.getElementById('handoff-copy-confirm');
-    el.textContent='✓ Copied';
-    setTimeout(()=>el.textContent='',2200);
-  });
-}
-
 async function shareHandoff(){
   const txt=buildHandoffText();
-  const title='RTLine Shift Handoff';
+  const now=new Date();
+  const dateStr=now.toLocaleDateString([],{month:'short',day:'numeric'});
+  const timeStr=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const title=`RTLine Shift Report — ${dateStr} ${timeStr}`;
   if(navigator.share){
     try{
       await navigator.share({title,text:txt});
     }catch(e){
-      if(e.name!=='AbortError')alert('Share failed. Use Copy instead.');
+      if(e.name!=='AbortError'){
+        const el=document.getElementById('handoff-copy-confirm');
+        el.textContent='Share unavailable — try copying the text above';
+        setTimeout(()=>el.textContent='',3000);
+      }
     }
   } else {
-    // Desktop fallback
-    navigator.clipboard.writeText(txt).then(()=>{
+    // Desktop fallback — copy to clipboard
+    const writeText=navigator.clipboard?.writeText(txt);
+    const confirm=()=>{
       const el=document.getElementById('handoff-copy-confirm');
-      el.textContent='Sharing not available — copied to clipboard instead';
+      el.textContent='Copied — paste into an email to send';
       setTimeout(()=>el.textContent='',3000);
-    }).catch(()=>{
+    };
+    if(writeText){writeText.then(confirm).catch(()=>{
       const ta=document.createElement('textarea');
-      ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+      ta.value=txt;ta.style.cssText='position:fixed;opacity:0';
       document.body.appendChild(ta);ta.select();
       document.execCommand('copy');document.body.removeChild(ta);
-      const el=document.getElementById('handoff-copy-confirm');
-      el.textContent='Sharing not available — copied to clipboard instead';
-      setTimeout(()=>el.textContent='',3000);
-    });
+      confirm();
+    });}
   }
 }
 
