@@ -349,7 +349,7 @@ input::placeholder{color:#c8c8c8}
       <p>By tapping "I Accept," you acknowledge that you are a licensed healthcare professional, you have read and understood these terms, and you accept sole responsibility for clinical decisions made during your use of this application.</p>
     </div>
     <button class="tos-accept" onclick="acceptTos()">I Accept — Continue to RTLine</button>
-    <div class="tos-note">RTLine v1.1 &nbsp;·&nbsp; For professional use only</div>
+    <div class="tos-note">RTLine v1.2 &nbsp;·&nbsp; For professional use only</div>
   </div>
 </div>
 
@@ -368,9 +368,18 @@ input::placeholder{color:#c8c8c8}
         <div class="about-feature"><span class="about-icon">&#128196;</span><div><strong>Patient info panel</strong> — document diagnosis, days on device, last ABG with auto-calculated P/F ratio, CXR findings, and a free-text clinical summary for handoff. Tap the header to collapse after filling in.</div></div>
         <div class="about-feature"><span class="about-icon">&#128168;</span><div><strong>Device &amp; settings</strong> — device type is changeable mid-shift. Full vent settings with auto-calculated driving pressure. APRV fields appear automatically when APRV mode is selected. BiPAP includes auto-calculated pressure support.</div></div>
         <div class="about-feature"><span class="about-icon">&#9888;&#65039;</span><div><strong>Alarm settings</strong> — document high/low limits for pressure, PEEP, Vt, Ve, and RR for charting reference.</div></div>
+        <div class="about-feature"><span class="about-icon">&#128137;</span><div><strong>Active drips</strong> — document sedation, analgesics, and vasopressors running on ventilated patients. Tap <em>＋ Add drip</em> to add a row; rate is optional free text. Appears in the handoff report.</div></div>
         <div class="about-feature"><span class="about-icon">&#128247;</span><div><strong>Image capture</strong> — tap a slot to photograph vent screens or equipment. Images are stored locally only, never transmitted, and auto-purge after 14 hours. Tap the image to view full screen; tap ✕ to delete.</div></div>
         <div class="about-feature"><span class="about-icon">&#8679;</span><div><strong>Handoff report</strong> — generates a complete shift summary for oncoming staff. Tap <em>Send Report</em> and choose <strong>Mail</strong> for best results — the full report arrives as a ready-to-send email draft.</div></div>
         <div class="about-feature"><span class="about-icon">&#128228;</span><div><strong>Export</strong> — full detailed .txt download with all settings, alarms, and notes for charting reference.</div></div>
+      </div>
+
+      <div class="about-section">
+        <div class="about-section-title">&#9200; Round Sheet tab</div>
+        <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>Build your pull list</strong> — enter room number, treatment abbreviation, and frequency. Tap <em>＋ Add</em> or press Enter to append rows quickly.</div></div>
+        <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>Due Now filter</strong> — auto-detects the active time slot based on your facility schedule and shows only treatments currently due.</div></div>
+        <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>Tap to cycle status</strong> — tap any row to cycle: blank → ✓ Done → ✗ Refused → ⊘ Off unit → blank.</div></div>
+        <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>Facility schedule</strong> — tap ⚙ Schedule to set anchor times for Q4, Q6, Q8, and BID 2nd dose.</div></div>
       </div>
 
       <div class="about-section">
@@ -398,16 +407,11 @@ input::placeholder{color:#c8c8c8}
       </div>
 
       <div class="about-section">
-        <div class="about-section-title">&#128138; Meds tab</div>
-        <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>Nebulized medications</strong> — reference doses, diluents, and frequencies for bronchodilators, LABAs, LAMAs, inhaled steroids, and airway clearance agents.</div></div>
-        <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>ET tube drugs (NAVEL)</strong> — emergency ETT drug doses: Naloxone, Atropine, Vasopressin, Epinephrine, Lidocaine.</div></div>
-      </div>
-
-      <div class="about-section">
-        <div class="about-section-title">&#128118; Peds tab</div>
-        <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>Emergency calculator</strong> — age/weight-based ETT sizing, blade selection, LMA, intubation depth, and vent starting points with Broselow color coding.</div></div>
+        <div class="about-section-title">&#128118; Peds/Neo tab</div>
+        <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>Intubation calculator</strong> — age/weight-based ETT sizing, blade selection, LMA, intubation depth, and vent starting points with Broselow color coding.</div></div>
         <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>RSI drugs</strong> — pretreatment, induction agents, and paralytics with weight-based dosing.</div></div>
         <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>Code Blue</strong> — CPR parameters, epinephrine, amiodarone, adenosine, defibrillation and cardioversion energy.</div></div>
+        <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>Surfactant calculator</strong> — birth weight-based dosing for Curosurf, Survanta, and Infasurf. Initial and repeat doses with vial counts, waste calculation, repeat timing, and eligibility criteria.</div></div>
       </div>
 
       <div class="about-section">
@@ -459,18 +463,18 @@ input::placeholder{color:#c8c8c8}
       <button onclick="showAbout()" title="About RTLine" style="flex-shrink:0;width:36px;height:36px;border-radius:50%;background:#e8f0fe;border:1.5px solid #4a80e0;color:#1a4a8a;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:4px;-webkit-tap-highlight-color:transparent">?</button>
     </div>
     <div class="disclaimer">&#9888;&#65039; Reference tool only. No PHI. Room numbers only — no patient names or MRNs. Verify all values before clinical use.</div>
-    <div class="app-version">v1.1 &nbsp;&#183;&nbsp; <button onclick="showAbout()" style="background:none;border:none;font-size:11px;color:#bbb;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit">About</button> &nbsp;&#183;&nbsp; <button onclick="showTos()" style="background:none;border:none;font-size:11px;color:#bbb;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit">Terms of Use</button> &nbsp;&#183;&nbsp; <a href="mailto:medicalreferencepros@gmail.com?subject=RTLine%20Feedback" style="font-size:11px;color:#bbb;text-decoration:underline">Feedback</a> &nbsp;&#183;&nbsp; <button onclick="document.getElementById('qr-overlay').style.display='flex'" style="background:none;border:none;font-size:11px;color:#bbb;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit">&#128247; QR Code</button></div>
+    <div class="app-version">v1.2 &nbsp;&#183;&nbsp; <button onclick="showAbout()" style="background:none;border:none;font-size:11px;color:#bbb;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit">About</button> &nbsp;&#183;&nbsp; <button onclick="showTos()" style="background:none;border:none;font-size:11px;color:#bbb;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit">Terms of Use</button> &nbsp;&#183;&nbsp; <a href="mailto:medicalreferencepros@gmail.com?subject=RTLine%20Feedback" style="font-size:11px;color:#bbb;text-decoration:underline">Feedback</a> &nbsp;&#183;&nbsp; <button onclick="document.getElementById('qr-overlay').style.display='flex'" style="background:none;border:none;font-size:11px;color:#bbb;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit">&#128247; QR Code</button></div>
   </div>
 
   <!-- MAIN TABS -->
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('rounding',this)">&#128203; Rounding</button>
+    <button class="tab-btn" onclick="switchTab('roundsheet',this)">&#9200; Round Sheet</button>
     <button class="tab-btn" onclick="switchTab('vent',this)">&#128168; Ventilator</button>
     <button class="tab-btn" onclick="switchTab('niv',this)">&#128567; NIV/HFNC</button>
     <button class="tab-btn" onclick="switchTab('abg',this)">&#129704; ABG</button>
-    <button class="tab-btn" onclick="switchTab('peds',this)">&#128118; Peds</button>
+    <button class="tab-btn" onclick="switchTab('peds',this)">&#128118; Peds/Neo</button>
     <button class="tab-btn" onclick="switchTab('breath',this)">&#127897; Breath Sounds</button>
-    <button class="tab-btn" onclick="switchTab('meds',this)">&#128138; Meds</button>
     <button class="tab-btn" onclick="switchTab('changelog',this)">&#127381; What's New</button>
   </div>
 
@@ -533,15 +537,76 @@ input::placeholder{color:#c8c8c8}
     </div>
   </div>
 
+  <!-- ROUND SHEET TAB -->
+  <div id="tab-roundsheet" class="tab-panel">
+
+    <!-- SCHEDULE SETTINGS BAR -->
+    <div id="rs-settings-bar" style="display:none;background:#f8f4ff;border:1px solid #d8cff0;border-radius:10px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:#5a3fa0;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">&#9200; Facility schedule — anchor times</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <div><label style="font-size:11px;color:#666;display:block;margin-bottom:3px">Q4 anchor</label>
+          <input type="time" id="rs-anc-q4" value="08:00" onchange="rsScheduleChanged()" style="width:100%;font-size:13px;padding:5px 8px;border:1px solid #d8cff0;border-radius:6px"></div>
+        <div><label style="font-size:11px;color:#666;display:block;margin-bottom:3px">Q6 anchor</label>
+          <input type="time" id="rs-anc-q6" value="11:00" onchange="rsScheduleChanged()" style="width:100%;font-size:13px;padding:5px 8px;border:1px solid #d8cff0;border-radius:6px"></div>
+        <div><label style="font-size:11px;color:#666;display:block;margin-bottom:3px">Q8 / TID anchor</label>
+          <input type="time" id="rs-anc-q8" value="14:00" onchange="rsScheduleChanged()" style="width:100%;font-size:13px;padding:5px 8px;border:1px solid #d8cff0;border-radius:6px"></div>
+        <div><label style="font-size:11px;color:#666;display:block;margin-bottom:3px">BID 2nd dose</label>
+          <input type="time" id="rs-anc-bid2" value="20:00" onchange="rsScheduleChanged()" style="width:100%;font-size:13px;padding:5px 8px;border:1px solid #d8cff0;border-radius:6px"></div>
+      </div>
+      <button onclick="document.getElementById('rs-settings-bar').style.display='none'" style="width:100%;background:#5a3fa0;color:#fff;border:none;border-radius:6px;padding:7px;font-size:13px;font-weight:600;cursor:pointer">Done</button>
+    </div>
+
+    <!-- CONTROLS ROW -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <div style="font-size:14px;font-weight:700;color:#1a1a1a;flex:1">&#9200; Treatment Round Sheet</div>
+      <button onclick="rsDueNow()" id="rs-due-btn" style="padding:6px 14px;font-size:12px;font-weight:700;border-radius:20px;border:2px solid #5a3fa0;background:#5a3fa0;color:#fff;cursor:pointer;white-space:nowrap">Due Now</button>
+      <button onclick="rsShowAll()" id="rs-all-btn" style="padding:6px 14px;font-size:12px;font-weight:600;border-radius:20px;border:2px solid #5a3fa0;background:#fff;color:#5a3fa0;cursor:pointer;white-space:nowrap">All</button>
+      <button onclick="document.getElementById('rs-settings-bar').style.display=document.getElementById('rs-settings-bar').style.display==='none'?'block':'none'" style="padding:6px 10px;font-size:12px;border-radius:20px;border:1px solid #d8cff0;background:#f8f4ff;color:#5a3fa0;cursor:pointer;white-space:nowrap">&#9881; Schedule</button>
+    </div>
+
+    <!-- ACTIVE SLOT DISPLAY -->
+    <div id="rs-slot-label" style="font-size:12px;color:#888;margin-bottom:10px;min-height:18px"></div>
+
+    <!-- TREATMENT LIST -->
+    <div id="rs-list" style="margin-bottom:12px"></div>
+
+    <!-- ADD ROW -->
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 12px;background:#f8f4ff;border:1px dashed #b0a0e0;border-radius:8px">
+      <input type="text" id="rs-new-room" placeholder="Room" maxlength="8"
+        style="width:70px;font-size:13px;padding:6px 8px;border:1px solid #d8cff0;border-radius:6px;font-weight:700"
+        onkeydown="if(event.key==='Enter')rsAddRow()">
+      <input type="text" id="rs-new-tx" placeholder="Treatment (e.g. duo, alb, is)"
+        style="flex:1;min-width:130px;font-size:13px;padding:6px 8px;border:1px solid #d8cff0;border-radius:6px"
+        onkeydown="if(event.key==='Enter')rsAddRow()">
+      <select id="rs-new-freq" style="font-size:13px;padding:6px 8px;border:1px solid #d8cff0;border-radius:6px;background:#fff;color:#333">
+        <option value="q4">Q4</option>
+        <option value="q6">Q6</option>
+        <option value="q8">Q8</option>
+        <option value="q12">Q12</option>
+        <option value="bid">BID</option>
+        <option value="tid">TID</option>
+        <option value="qid">QID</option>
+        <option value="prn">PRN</option>
+      </select>
+      <button onclick="rsAddRow()" style="padding:6px 16px;font-size:13px;font-weight:700;border-radius:6px;border:none;background:#5a3fa0;color:#fff;cursor:pointer;white-space:nowrap">＋ Add</button>
+    </div>
+
+    <!-- CLEAR ALL -->
+    <div style="margin-top:10px;text-align:right">
+      <button onclick="rsClearAll()" style="background:none;border:none;font-size:11px;color:#ccc;cursor:pointer;text-decoration:underline">Clear all entries</button>
+    </div>
+
+  </div>
+
   <!-- VENTILATOR TAB -->
   <div id="tab-vent" class="tab-panel">
     <div class="sub-tab-bar">
       <button class="sub-tab-btn active" onclick="switchSub('vent','calc',this)">Calculator</button>
+      <button class="sub-tab-btn" onclick="switchSub('vent','drips',this)">Drips</button>
       <button class="sub-tab-btn" onclick="switchSub('vent','aprv',this)">APRV / bilevel</button>
       <button class="sub-tab-btn" onclick="switchSub('vent','wean',this)">Weaning</button>
       <button class="sub-tab-btn" onclick="switchSub('vent','modes',this)">Modes</button>
       <button class="sub-tab-btn" onclick="switchSub('vent','alarms',this)">Alarms</button>
-      <button class="sub-tab-btn" onclick="switchSub('vent','drips',this)">Drips</button>
     </div>
     <div id="vent-calc" class="sub-panel active">
       <div class="section-note">Tidal volume target based on IBW. Enter height and measured plateau pressure to calculate driving pressure. Initial PEEP 5 cmH&#8322;O; adjust per ARDSnet table or clinical response.</div>
@@ -1189,46 +1254,6 @@ input::placeholder{color:#c8c8c8}
     </div>
   </div>
 
-  <!-- MEDS TAB -->
-  <div id="tab-meds" class="tab-panel">
-    <div class="sub-tab-bar">
-      <button class="sub-tab-btn active" onclick="switchSub('meds','ref',this)">Nebulized meds</button>
-      <button class="sub-tab-btn" onclick="switchSub('meds','ettube',this)">ET tube drugs</button>
-    </div>
-    <div id="meds-ref" class="sub-panel active">
-      <div class="section-note">Reference doses only. All medication orders require physician order and institutional protocol. Verify allergies before administration.</div>
-      <table class="med-table">
-        <thead><tr><th>Drug</th><th>Dose</th><th>Diluent</th><th>Frequency</th><th>Notes</th></tr></thead>
-        <tbody>
-          <tr><td colspan="5" class="med-cat">Short-acting bronchodilators</td></tr>
-          <tr><td class="drug-name">Albuterol</td><td>2.5 mg</td><td>3 mL NS or RTU</td><td>Q4h / Q2h / continuous</td><td class="note-cell">MDI 4&#8211;8 puffs equivalent. Continuous neb for severe bronchospasm: 10&#8211;15 mg/hr.</td></tr>
-          <tr><td class="drug-name">Ipratropium</td><td>0.5 mg</td><td>2.5 mL NS</td><td>Q6h</td><td class="note-cell">Anticholinergic. Often combined with albuterol.</td></tr>
-          <tr><td class="drug-name">Duoneb</td><td>3 mL unit dose</td><td>Ready to use</td><td>Q6h / Q4h</td><td class="note-cell">Combination albuterol/ipratropium. Not for continuous nebulization.</td></tr>
-          <tr><td colspan="5" class="med-cat">Long-acting bronchodilators</td></tr>
-          <tr><td class="drug-name">Formoterol (Performist)</td><td>20 mcg</td><td>Ready to use</td><td>Q12h</td><td class="note-cell">LABA. Maintenance only &#8212; not for acute bronchospasm. Do not exceed Q12h.</td></tr>
-          <tr><td class="drug-name">Revefenacin (Yupelri)</td><td>175 mcg</td><td>Ready to use</td><td>QD</td><td class="note-cell">Once-daily LAMA. COPD maintenance only.</td></tr>
-          <tr><td colspan="5" class="med-cat">Inhaled corticosteroids</td></tr>
-          <tr><td class="drug-name">Budesonide (Pulmicort)</td><td>0.25&#8211;1 mg</td><td>Ready to use</td><td>BID&#8211;QID</td><td class="note-cell">Inhaled steroid. Rinse mouth after admin in non-intubated patients.</td></tr>
-          <tr><td colspan="5" class="med-cat">Airway clearance</td></tr>
-          <tr><td class="drug-name">Hypertonic saline 3%</td><td>4 mL</td><td>Ready to use</td><td>BID&#8211;QID</td><td class="note-cell">Pre-treat with bronchodilator. Monitor SpO&#8322;.</td></tr>
-          <tr><td class="drug-name">Hypertonic saline 7%</td><td>4 mL</td><td>Ready to use</td><td>BID&#8211;QID</td><td class="note-cell">Higher bronchospasm risk. Pre-bronchodilator mandatory. Used in CF.</td></tr>
-          <tr><td class="drug-name">Dornase alfa (Pulmozyme)</td><td>2.5 mg</td><td>Ready to use</td><td>QD&#8211;BID</td><td class="note-cell">Mucolytic for thick secretions. Requires PARI LC Plus nebulizer.</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div id="meds-ettube" class="sub-panel">
-      <div class="section-note">NAVEL mnemonic &#8212; medications that can be given via ETT when IV/IO access is unavailable. Doses are generally 2&#8211;3&#215; IV dose. Dilute in 5&#8211;10 mL NS and follow with 5 ventilations.</div>
-      <div class="navel-grid">
-        <div class="navel-card"><div class="navel-letter">N</div><div class="navel-drug">Naloxone</div><div class="navel-dose"><strong>ETT dose:</strong> 2&#8211;2.5&#215; IV dose<br><strong>Typical:</strong> 0.8&#8211;2 mg<br>Dilute in 3&#8211;5 mL NS</div></div>
-        <div class="navel-card"><div class="navel-letter">A</div><div class="navel-drug">Atropine</div><div class="navel-dose"><strong>ETT dose:</strong> 2&#8211;3&#215; IV dose<br><strong>Typical:</strong> 1&#8211;3 mg<br>Dilute in 5&#8211;10 mL NS</div></div>
-        <div class="navel-card"><div class="navel-letter">V</div><div class="navel-drug">Vasopressin</div><div class="navel-dose"><strong>ETT dose:</strong> 40 units (2&#215; IV)<br>Dilute in 5&#8211;10 mL NS</div></div>
-        <div class="navel-card"><div class="navel-letter">E</div><div class="navel-drug">Epinephrine</div><div class="navel-dose"><strong>ETT dose:</strong> 2&#8211;2.5&#215; IV dose<br><strong>Typical:</strong> 2&#8211;2.5 mg (1:1,000)<br>Dilute in 5&#8211;10 mL NS</div></div>
-        <div class="navel-card"><div class="navel-letter">L</div><div class="navel-drug">Lidocaine</div><div class="navel-dose"><strong>ETT dose:</strong> 2&#8211;3&#215; IV dose<br><strong>Typical:</strong> 2&#8211;3 mg/kg<br>Dilute in 5&#8211;10 mL NS</div></div>
-      </div>
-      <div class="info-box warn"><strong>IV/IO always preferred.</strong> ETT absorption is unpredictable. Use only when IV/IO access cannot be established rapidly.</div>
-    </div>
-  </div>
-
   <!-- ABG TAB -->
   <div id="tab-abg" class="tab-panel">
     <div class="sub-tab-bar">
@@ -1376,30 +1401,115 @@ input::placeholder{color:#c8c8c8}
 
   <!-- PEDS TAB -->
   <div id="tab-peds" class="tab-panel">
-    <div class="peds-input-bar">
-      <div class="peds-row-inp">
-        <div class="peds-ig"><label>Age group</label>
-          <select id="p-age">
-            <option value="">Select age group&#8230;</option>
-            <option value="neonate">Neonate (0&#8211;1 mo, ~3 kg)</option>
-            <option value="infant1">Infant 1&#8211;3 mo (~5 kg)</option>
-            <option value="infant2">Infant 3&#8211;6 mo (~7 kg)</option>
-            <option value="infant3">Infant 6&#8211;12 mo (~9 kg)</option>
-            <option value="toddler1">Toddler 1&#8211;2 yr (~12 kg)</option>
-            <option value="toddler2">Toddler 2&#8211;3 yr (~14 kg)</option>
-            <option value="child1">Child 3&#8211;5 yr (~18 kg)</option>
-            <option value="child2">Child 6&#8211;9 yr (~24 kg)</option>
-            <option value="child3">Child 10&#8211;12 yr (~35 kg)</option>
-            <option value="teen">Adolescent 13+ yr (~60 kg)</option>
-          </select>
+    <div class="sub-tab-bar">
+      <button class="sub-tab-btn active" onclick="switchSub('peds','intub',this)">Intubation Calc</button>
+      <button class="sub-tab-btn" onclick="switchSub('peds','surf',this)">Surfactant</button>
+    </div>
+
+    <!-- INTUBATION SUB-PANEL -->
+    <div id="peds-intub" class="sub-panel active">
+      <div class="peds-input-bar">
+        <div class="peds-row-inp">
+          <div class="peds-ig"><label>Age group</label>
+            <select id="p-age">
+              <option value="">Select age group&#8230;</option>
+              <option value="neonate">Neonate (0&#8211;1 mo, ~3 kg)</option>
+              <option value="infant1">Infant 1&#8211;3 mo (~5 kg)</option>
+              <option value="infant2">Infant 3&#8211;6 mo (~7 kg)</option>
+              <option value="infant3">Infant 6&#8211;12 mo (~9 kg)</option>
+              <option value="toddler1">Toddler 1&#8211;2 yr (~12 kg)</option>
+              <option value="toddler2">Toddler 2&#8211;3 yr (~14 kg)</option>
+              <option value="child1">Child 3&#8211;5 yr (~18 kg)</option>
+              <option value="child2">Child 6&#8211;9 yr (~24 kg)</option>
+              <option value="child3">Child 10&#8211;12 yr (~35 kg)</option>
+              <option value="teen">Adolescent 13+ yr (~60 kg)</option>
+            </select>
+          </div>
+          <div class="peds-ig" style="max-width:130px"><label>Actual weight <span class="opt-label">(opt)</span></label>
+            <input type="number" id="p-wt" step="0.1" placeholder="kg">
+          </div>
+          <button class="btn-sm accent" onclick="pedsCalc()" style="height:42px;margin-top:18px">Calculate</button>
         </div>
-        <div class="peds-ig" style="max-width:130px"><label>Actual weight <span class="opt-label">(opt)</span></label>
-          <input type="number" id="p-wt" step="0.1" placeholder="kg">
+      </div>
+      <div id="peds-out"></div>
+    </div>
+
+    <!-- SURFACTANT SUB-PANEL -->
+    <div id="peds-surf" class="sub-panel">
+      <div class="section-note">Surfactant dosing based on birth weight. Gestational age shown for reference only — all dosing is weight-driven. Verify product availability and institutional protocol before administration.</div>
+
+      <div class="peds-input-bar">
+        <div class="peds-row-inp" style="flex-wrap:wrap;gap:10px">
+          <div class="peds-ig" style="min-width:130px">
+            <label>Birth weight (kg)</label>
+            <input type="number" id="surf-bw" step="0.01" placeholder="e.g. 1.25" oninput="surfCalc()">
+          </div>
+          <div class="peds-ig" style="min-width:130px">
+            <label>Gestational age <span class="opt-label">(wks, display only)</span></label>
+            <input type="number" id="surf-ga" step="1" placeholder="e.g. 28" oninput="surfCalc()">
+          </div>
+          <div class="peds-ig" style="min-width:160px">
+            <label>Surfactant</label>
+            <select id="surf-drug" onchange="surfCalc()">
+              <option value="">Select drug&#8230;</option>
+              <option value="curosurf">Poractant alfa (Curosurf)</option>
+              <option value="survanta">Beractant (Survanta)</option>
+              <option value="infasurf">Calfactant (Infasurf)</option>
+            </select>
+          </div>
         </div>
-        <button class="btn-sm accent" onclick="pedsCalc()" style="height:42px;margin-top:18px">Calculate</button>
+      </div>
+
+      <div id="surf-out" style="margin-top:4px"></div>
+
+      <!-- DRUG REFERENCE CARDS -->
+      <div style="margin-top:1.5rem">
+        <div class="card-section-title" style="margin-bottom:10px">&#128138; Drug reference</div>
+
+        <div class="mode-card" style="border-left:3px solid #1a4a8a">
+          <div class="mode-name">Poractant alfa — Curosurf</div>
+          <div class="mode-full">Porcine-derived natural surfactant &nbsp;|&nbsp; 80 mg/mL</div>
+          <div class="mode-desc">
+            <strong>Initial dose:</strong> 200 mg/kg (2.5 mL/kg) — standard protocol at most NICU centers<br>
+            <em style="font-size:12px;color:#888">Note: 100 mg/kg (1.25 mL/kg) is also FDA-approved as a lower initial dose.</em><br><br>
+            <strong>Repeat doses:</strong> 100 mg/kg (1.25 mL/kg) &times; up to 2 additional doses<br>
+            <strong>Repeat timing:</strong> &#8805; 12 hours after previous dose if still intubated and FiO&#8322; &gt; 0.30<br><br>
+            <strong>Vials:</strong> 1.5 mL (120 mg) &nbsp;|&nbsp; 3 mL (240 mg)<br>
+            <strong>Storage:</strong> Refrigerate 2&#8211;8°C. Warm to room temp before use. Unused portion must be discarded.
+          </div>
+        </div>
+
+        <div class="mode-card" style="border-left:3px solid #2d6129">
+          <div class="mode-name">Beractant — Survanta</div>
+          <div class="mode-full">Bovine lung extract &nbsp;|&nbsp; 25 mg/mL</div>
+          <div class="mode-desc">
+            <strong>Initial dose:</strong> 100 mg/kg (4 mL/kg)<br>
+            <strong>Repeat doses:</strong> 100 mg/kg (4 mL/kg) &times; up to 3 additional doses<br>
+            <strong>Repeat timing:</strong> No sooner than every 6 hours &times; max 4 doses in 48 hours<br><br>
+            <strong>Vials:</strong> 4 mL (100 mg) &nbsp;|&nbsp; 8 mL (200 mg)<br>
+            <strong>Administration:</strong> Administer in 4 quarter-doses with repositioning between each.<br>
+            <strong>Storage:</strong> Refrigerate. Warm to 37°C before use. Discard unused portion.
+          </div>
+        </div>
+
+        <div class="mode-card" style="border-left:3px solid #8a6020">
+          <div class="mode-name">Calfactant — Infasurf</div>
+          <div class="mode-full">Calf lung lavage extract &nbsp;|&nbsp; 35 mg/mL</div>
+          <div class="mode-desc">
+            <strong>Initial dose:</strong> 105 mg/kg (3 mL/kg)<br>
+            <strong>Repeat doses:</strong> 105 mg/kg (3 mL/kg) &times; up to 2 additional doses<br>
+            <strong>Repeat timing:</strong> Every 12 hours if still intubated and requiring O&#8322; &times; max 3 total doses<br><br>
+            <strong>Vials:</strong> 3 mL (105 mg) &nbsp;|&nbsp; 6 mL (210 mg)<br>
+            <strong>Administration:</strong> Administer in 2 aliquots (right lateral, then left lateral).<br>
+            <strong>Storage:</strong> Refrigerate. Gently swirl — do not shake. Discard unused portion.
+          </div>
+        </div>
+
+        <div class="info-box warn" style="margin-top:1rem">
+          <strong>General administration notes:</strong> Administer via ETT side-port or brief disconnection from ventilator. Confirm ETT position before dosing. Monitor SpO&#8322;, HR, and chest rise continuously during and after administration. Transient bradycardia, oxygen desaturation, or reflux of surfactant into the ETT may occur — be prepared to reposition or suction. Do not suction for 1 hour after dosing unless clinically necessary.
+        </div>
       </div>
     </div>
-    <div id="peds-out"></div>
   </div>
 
   <div id="tab-breath" class="tab-panel">
@@ -1595,12 +1705,56 @@ input::placeholder{color:#c8c8c8}
       <div style="font-size:18px;font-weight:700;color:#1a1a1a;margin-bottom:4px">&#127381; What's New</div>
       <div style="font-size:12px;color:#aaa;margin-bottom:24px">RTLine release history — newest first</div>
 
-      <!-- V1.1 -->
+      <!-- V1.2 -->
       <div style="border:1px solid #e5e5e2;border-left:3px solid #1a4a8a;border-radius:8px;padding:14px 16px;margin-bottom:16px;background:#f8fbff">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px">
+          <span style="font-size:15px;font-weight:800;color:#1a4a8a">v1.2</span>
+          <span style="font-size:11px;color:#aaa">2026</span>
+          <span style="font-size:10px;font-weight:700;background:#1a4a8a;color:#fff;padding:2px 7px;border-radius:10px">Current</span>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Round Sheet</div>
+        <ul style="font-size:13px;color:#444;line-height:1.8;margin:0 0 10px;padding-left:18px">
+          <li>New <strong>Round Sheet tab</strong> between Rounding and Ventilator</li>
+          <li>Room + treatment + frequency entry — fast keyboard-friendly input (Enter to add)</li>
+          <li>Due Now filter — auto-selects the closest active time slot within 90 minutes</li>
+          <li>Facility schedule — configurable anchor times for Q4, Q6, Q8, BID 2nd dose; persists for the session</li>
+          <li>Tap any row to cycle status: blank → ✓ Done → ✗ Refused → ⊘ Off unit</li>
+          <li>Frequencies supported: Q4, Q6, Q8, Q12, BID, TID, QID, PRN</li>
+          <li>Session-persistent — survives app close and reopening within the 14-hour window</li>
+        </ul>
+        <div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Peds / Neonatal</div>
+        <ul style="font-size:13px;color:#444;line-height:1.8;margin:0 0 10px;padding-left:18px">
+          <li>Peds tab renamed to <strong>Peds/Neo</strong> with sub-tab navigation</li>
+          <li>Surfactant calculator added — supports Curosurf, Survanta, and Infasurf</li>
+          <li>Birth weight-driven dosing with GA as display field</li>
+          <li>Initial and repeat doses in mg and mL with per-kg rates shown</li>
+          <li>Vial count calculator with waste flagging (greedy large-vial-first logic)</li>
+          <li>Repeat dosing criteria, timing, and max dose limits per drug</li>
+          <li>Full drug reference cards with storage, administration notes, and vial sizes</li>
+        </ul>
+        <div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Ventilator tab</div>
+        <ul style="font-size:13px;color:#444;line-height:1.8;margin:0 0 10px;padding-left:18px">
+          <li>Drips sub-tab moved to position 2 — Calculator → Drips → APRV → Weaning → Modes → Alarms</li>
+        </ul>
+        <div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Rounding cards</div>
+        <ul style="font-size:13px;color:#444;line-height:1.8;margin:0 0 10px;padding-left:18px">
+          <li>Active Drips panel added to ventilated patient cards (purple collapsible section)</li>
+          <li>Grouped dropdown: Sedation/Analgesia, Vasopressors, Other/Custom with free-text rate field</li>
+          <li>Drips appear in handoff report with rate if entered, drug name only if not</li>
+          <li>Swipe left on any patient card to reveal red Delete button — tap to confirm, tap elsewhere to cancel</li>
+          <li>Respiratory Therapy section removed from rounding cards — treatment tracking moved to Round Sheet tab (upcoming)</li>
+        </ul>
+        <div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">App</div>
+        <ul style="font-size:13px;color:#444;line-height:1.8;margin:0;padding-left:18px">
+          <li>Meds tab removed — nebulized meds and NAVEL reference retired to streamline navigation</li>
+        </ul>
+      </div>
+
+      <!-- V1.1 -->
+      <div style="border:1px solid #e5e5e2;border-left:3px solid #aaa;border-radius:8px;padding:14px 16px;margin-bottom:16px;background:#fafafa">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px">
           <span style="font-size:15px;font-weight:800;color:#1a4a8a">v1.1</span>
           <span style="font-size:11px;color:#aaa">2026</span>
-          <span style="font-size:10px;font-weight:700;background:#1a4a8a;color:#fff;padding:2px 7px;border-radius:10px">Current</span>
         </div>
         <div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Patient Assessment</div>
         <ul style="font-size:13px;color:#444;line-height:1.8;margin:0 0 10px;padding-left:18px">
@@ -1686,7 +1840,7 @@ input::placeholder{color:#c8c8c8}
       RTLine is intended as a clinical reference and documentation aid for licensed respiratory therapists and healthcare professionals. It is not a substitute for professional judgment, institutional protocols, or physician orders. All reference values must be verified before clinical use.
     </div>
     <div style="font-size:11px;color:#ccc">
-      v1.1 &nbsp;&#183;&nbsp;
+      v1.2 &nbsp;&#183;&nbsp;
       <button onclick="showAbout()" style="background:none;border:none;font-size:11px;color:#bbb;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit">About</button> &nbsp;&#183;&nbsp;
       <button onclick="showTos()" style="background:none;border:none;font-size:11px;color:#bbb;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit">Terms of Use</button> &nbsp;&#183;&nbsp;
       <a href="mailto:medicalreferencepros@gmail.com?subject=RTLine%20Feedback" style="font-size:11px;color:#bbb;text-decoration:underline">Feedback</a> &nbsp;&#183;&nbsp;
@@ -1773,6 +1927,8 @@ window.addEventListener('DOMContentLoaded',function(){
   loadSession();
   loadShift();
   renderPatients();
+  rsLoad();
+  rsRender();
   showPeepTable('low');
   showInstallBanner();
 });
@@ -1902,9 +2058,10 @@ function addPatient(){
           ptInfoOpen:true,
           ventSettingsOpen:true,
           assessOpen:true,
-          therapyOpen:true,
           // nitric oxide
           nitrousOxide:false,noPpm:'',noStartPpm:'',noSystem:'',noResponse:'',
+          // active drips
+          activeDrips:'[]',dripsOpen:'false',
           // ett/airway
           ett:'',cuff:'',secretions:'',
           // trach fields (shared for trach-only and vent+trach)
@@ -1947,9 +2104,7 @@ function addPatient(){
           // abg collapse
           abgOpen:false,
           // o2 subtype
-          o2subtype:'',venturiPct:'',
-          // therapy
-          therapies:'',therapyDetails:'{}'},
+          o2subtype:'',venturiPct:''},
     images:[null,null]
   });
   saveSession();
@@ -1978,140 +2133,18 @@ function toggleAbg(id){
   if(p){p.data.abgOpen=String(!isOpen);saveSession();}
 }
 
-function getThDetails(id){
-  const p=patients.find(x=>x.id===id);
-  if(!p)return {};
-  try{return JSON.parse(p.data.therapyDetails||'{}');}catch(e){return {};}
-}
-
-function saveThDetails(id,details){
+function toggleNO(id){
   const p=patients.find(x=>x.id===id);
   if(!p)return;
-  p.data.therapyDetails=JSON.stringify(details);
-  const el=document.getElementById('p'+id+'-therapyDetails');
-  if(el)el.value=p.data.therapyDetails;
-  saveSession();
-}
-
-function saveTherapies(id){
-  const p=patients.find(x=>x.id===id);
-  if(!p)return;
-  const therapyKeys=['neb','neb2','mdi','mdi2','is','flutter','cpt'];
-  const parts=[];
-  therapyKeys.forEach(k=>{
-    const btn=document.getElementById('th-btn-'+id+'-'+k);
-    if(btn&&btn.dataset.active==='1'){
-      const freq=document.getElementById('th-freq-'+id+'-'+k);
-      parts.push(k+(freq&&freq.value?':'+freq.value:''));
-    }
-  });
-  const prnEl=document.getElementById('th-prn-'+id);
-  if(prnEl&&prnEl.value.trim())parts.push('prn:'+prnEl.value.trim());
-  const hidden=document.getElementById('p'+id+'-therapies');
-  if(hidden)hidden.value=parts.join('|');
+  const cb=document.getElementById('p'+id+'-nitrousOxide');
+  const panel=document.getElementById('no-panel-'+id);
+  const badge=document.getElementById('no-badge-'+id);
+  if(!cb||!panel)return;
+  const on=cb.checked;
+  p.data.nitrousOxide=on;
+  panel.style.display=on?'block':'none';
+  if(badge)badge.style.display=on?'inline':'none';
   saveField(id);
-}
-
-function toggleTherapy(patId, val, btn){
-  const detailRow=document.getElementById('th-detail-'+patId+'-'+val);
-  const freq=document.getElementById('th-freq-'+patId+'-'+val);
-  const active=btn.dataset.active==='1';
-  if(active){
-    btn.dataset.active='0';
-    btn.style.background='#fff';btn.style.color='#555';
-    btn.style.borderColor='#ccc';btn.style.fontWeight='400';
-    if(freq)freq.style.display='none';
-    if(detailRow)detailRow.style.display='none';
-  } else {
-    btn.dataset.active='1';
-    btn.style.background='#2d6129';btn.style.color='#fff';
-    btn.style.borderColor='#2d6129';btn.style.fontWeight='600';
-    if(freq)freq.style.display='inline-block';
-    if(detailRow)detailRow.style.display='block';
-  }
-  saveTherapies(patId);
-}
-
-function thGivenNow(patId, key){
-  const details=getThDetails(patId);
-  if(!details[key])details[key]={};
-  const now=new Date();
-  details[key].lastGiven=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  details[key].refused='';
-  saveThDetails(patId,details);
-  // Update display
-  const tsEl=document.getElementById('th-ts-'+patId+'-'+key);
-  if(tsEl)tsEl.value=details[key].lastGiven;
-  const badgeEl=document.getElementById('th-badge-'+patId+'-'+key);
-  if(badgeEl)updateThBadge(patId,key,details[key]);
-  saveTherapies(patId);
-}
-
-function thSaveDetail(patId, key, field, val){
-  const details=getThDetails(patId);
-  if(!details[key])details[key]={};
-  details[key][field]=val;
-  saveThDetails(patId,details);
-  const badgeEl=document.getElementById('th-badge-'+patId+'-'+key);
-  if(badgeEl)updateThBadge(patId,key,details[key]);
-}
-
-function thSetResponse(patId, key, resp, clickedBtn){
-  // Toggle — if already selected, deselect
-  const details=getThDetails(patId);
-  if(!details[key])details[key]={};
-  const current=details[key].response||'';
-  details[key].response = current===resp?'':resp;
-  if(details[key].refused)details[key].refused=''; // clear refused if response set
-  saveThDetails(patId,details);
-  // Refresh all response buttons for this therapy
-  ['imp','unc','wor'].forEach(r=>{
-    const el=document.getElementById('th-resp-'+patId+'-'+key+'-'+r);
-    const isActive=details[key].response===r;
-    if(el){
-      el.style.fontWeight=isActive?'700':'400';
-      el.style.opacity=isActive?'1':'0.5';
-    }
-  });
-  const badgeEl=document.getElementById('th-badge-'+patId+'-'+key);
-  if(badgeEl)updateThBadge(patId,key,details[key]);
-  saveTherapies(patId);
-}
-
-function thSetRefused(patId, key, val){
-  const details=getThDetails(patId);
-  if(!details[key])details[key]={};
-  // Toggle
-  details[key].refused = details[key].refused===val?'':val;
-  if(details[key].refused){details[key].response='';details[key].lastGiven='';}
-  saveThDetails(patId,details);
-  const refEl=document.getElementById('th-ref-'+patId+'-'+key);
-  if(refEl){
-    const active=!!details[key].refused;
-    refEl.style.background=active?'#fdecea':'#fff';
-    refEl.style.color=active?'#8a2020':'#888';
-    refEl.style.borderColor=active?'#f0a0a0':'#ddd';
-  }
-  const badgeEl=document.getElementById('th-badge-'+patId+'-'+key);
-  if(badgeEl)updateThBadge(patId,key,details[key]);
-  saveTherapies(patId);
-}
-
-function updateThBadge(patId, key, det){
-  const el=document.getElementById('th-badge-'+patId+'-'+key);
-  if(!el)return;
-  const parts=[];
-  if(det.drug)parts.push(det.drug);
-  if(det.refused)parts.push('\uD83D\uDEAB '+det.refused);
-  else if(det.lastGiven){
-    parts.push(det.lastGiven);
-    if(det.response){
-      const rMap={imp:'\u2191',unc:'\u2192',wor:'\u2193'};
-      parts.push(rMap[det.response]||det.response);
-    }
-  }
-  el.textContent=parts.length?parts.join(' \u00B7 '):'';
-  el.style.display=parts.length?'inline':'none';
 }
 
 function toggleBreathSound(patId, val, btn){
@@ -2152,7 +2185,7 @@ function saveField(id){
    'sfRatio','spo2Target',
    'painScore','comfort','sync',
    'hob','assessNote',
-   'o2subtype','venturiPct','therapies','therapyDetails'].forEach(f=>{
+   'o2subtype','venturiPct'].forEach(f=>{
     const el=document.getElementById('p'+id+'-'+f);if(el)p.data[f]=el.value;
   });
   saveSession();
@@ -2226,17 +2259,6 @@ function toggleAssessment(id){
   if(p){p.data.assessOpen=!isOpen;saveSession();}
 }
 
-function toggleTherapySection(id){
-  const body=document.getElementById('therapy-body-'+id);
-  const tog=document.getElementById('therapy-tog-'+id);
-  const p=patients.find(x=>x.id===id);
-  if(!body)return;
-  const isOpen=body.style.display!=='none';
-  body.style.display=isOpen?'none':'block';
-  if(tog){tog.style.transform=isOpen?'rotate(-90deg)':'rotate(0deg)';}
-  if(p){p.data.therapyOpen=!isOpen;saveSession();}
-}
-
 function toggleNO(id){
   const p=patients.find(x=>x.id===id);
   if(!p)return;
@@ -2282,6 +2304,8 @@ function renderPatients(){
         const inp=document.getElementById('img-inp-'+p.id+'-'+slot);
         if(inp)inp.addEventListener('change',e=>captureImg(e,p.id,slot));
       });
+      const card=document.getElementById('card-'+p.id);
+      if(card)initSwipe(card,p.id);
     });
   });
 }
@@ -2936,6 +2960,51 @@ function buildCard(p){
               </div>
             </div>`:''}
 
+            <!-- ACTIVE DRIPS PANEL (vent only) -->
+            ${isVent?`<div style="margin-top:8px">
+              <div onclick="toggleDrips(${p.id})" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:7px 10px;background:#f8f4ff;border:1px solid #d8cff0;border-radius:8px;user-select:none">
+                <span style="font-size:11px;font-weight:700;color:#5a3fa0;text-transform:uppercase;letter-spacing:0.5px">&#128137; Active drips</span>
+                <span id="drips-chev-${p.id}" style="font-size:12px;color:#5a3fa0;transition:transform 0.2s;display:inline-block;transform:${d.dripsOpen==='true'?'rotate(0deg)':'rotate(-90deg)'}">&#9660;</span>
+              </div>
+              <div id="drips-panel-${p.id}" style="display:${d.dripsOpen==='true'?'block':'none'};padding:10px 12px;background:#f8f4ff;border:1px solid #d8cff0;border-top:none;border-radius:0 0 8px 8px">
+                <div id="drips-rows-${p.id}">
+                  ${(()=>{
+                    let drips=[];try{drips=JSON.parse(d.activeDrips||'[]');}catch(e){}
+                    if(!drips.length)return '<div style="font-size:12px;color:#aaa;padding:4px 0">No drips added — tap below to add one.</div>';
+                    return drips.map((dr,i)=>`<div class="drip-row" id="drip-row-${p.id}-${i}" style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+                      <select onchange="saveDrip(${p.id},${i},'drug',this.value)" style="flex:1.2;font-size:13px;padding:6px 8px;border:1px solid #d8cff0;border-radius:6px;background:#fff;color:#1a1a1a">
+                        <option value="">— select drug —</option>
+                        <optgroup label="Sedation / Analgesia">
+                          <option value="Propofol"${dr.drug==='Propofol'?' selected':''}>Propofol</option>
+                          <option value="Dexmedetomidine"${dr.drug==='Dexmedetomidine'?' selected':''}>Dexmedetomidine</option>
+                          <option value="Midazolam"${dr.drug==='Midazolam'?' selected':''}>Midazolam</option>
+                          <option value="Fentanyl"${dr.drug==='Fentanyl'?' selected':''}>Fentanyl</option>
+                          <option value="Hydromorphone"${dr.drug==='Hydromorphone'?' selected':''}>Hydromorphone</option>
+                          <option value="Morphine"${dr.drug==='Morphine'?' selected':''}>Morphine</option>
+                          <option value="Cisatracurium"${dr.drug==='Cisatracurium'?' selected':''}>Cisatracurium</option>
+                          <option value="Ketamine"${dr.drug==='Ketamine'?' selected':''}>Ketamine</option>
+                        </optgroup>
+                        <optgroup label="Vasopressors">
+                          <option value="Norepinephrine"${dr.drug==='Norepinephrine'?' selected':''}>Norepinephrine</option>
+                          <option value="Epinephrine"${dr.drug==='Epinephrine'?' selected':''}>Epinephrine</option>
+                          <option value="Vasopressin"${dr.drug==='Vasopressin'?' selected':''}>Vasopressin</option>
+                          <option value="Dopamine"${dr.drug==='Dopamine'?' selected':''}>Dopamine</option>
+                          <option value="Phenylephrine"${dr.drug==='Phenylephrine'?' selected':''}>Phenylephrine</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                          <option value="__custom__"${dr.drug==='__custom__'?' selected':''}>Other / Custom</option>
+                        </optgroup>
+                      </select>
+                      ${dr.drug==='__custom__'?`<input type="text" placeholder="Drug name" value="${dr.custom||''}" onchange="saveDrip(${p.id},${i},'custom',this.value)" style="flex:1;font-size:13px;padding:6px 8px;border:1px solid #d8cff0;border-radius:6px">`:''}
+                      <input type="text" placeholder="Rate (opt)" value="${dr.rate||''}" onchange="saveDrip(${p.id},${i},'rate',this.value)" style="width:90px;font-size:13px;padding:6px 8px;border:1px solid #d8cff0;border-radius:6px">
+                      <button onclick="removeDrip(${p.id},${i})" style="background:none;border:none;font-size:16px;color:#ccc;cursor:pointer;padding:0 2px;line-height:1" title="Remove">&#10005;</button>
+                    </div>`).join('');
+                  })()}
+                </div>
+                <button onclick="addDrip(${p.id})" style="margin-top:4px;background:none;border:1px dashed #b0a0e0;border-radius:6px;padding:5px 12px;font-size:12px;color:#5a3fa0;cursor:pointer;width:100%">＋ Add drip</button>
+              </div>
+            </div>`:''}
+
             <!-- VENT CONVENTIONAL SETTINGS -->
             ${isVent?`
             <div id="vent-conv-${p.id}" style="${isAPRV?'display:none':''}">
@@ -3138,138 +3207,7 @@ function buildCard(p){
 
       </div><!-- end Respiratory Support section -->
 
-      <!-- THERAPY BLOCK -->
-      <div class="card-section" style="border:1px solid #a8d8a0;border-left:3px solid #2d6129;border-radius:8px;padding:12px 14px;background:#f2fbf2;margin-bottom:12px">
-        <div onclick="toggleTherapySection(${p.id})" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;margin-bottom:4px">
-          <div class="card-section-title" style="color:#2d6129;border-color:#a8d8a0;margin-bottom:0;padding-bottom:0;border-bottom:none">&#128138; Respiratory Therapy</div>
-          <span id="therapy-tog-${p.id}" style="font-size:11px;color:#2d6129;transition:transform 0.2s;display:inline-block;transform:${(d.therapyOpen!==false)?'rotate(0deg)':'rotate(-90deg)'}">&#9660;</span>
-        </div>
-        <div id="therapy-body-${p.id}" style="display:${(d.therapyOpen!==false)?'block':'none'};border-top:1px solid #c0e0b8;padding-top:10px;margin-top:6px">
-        <div style="font-size:10px;color:#aaa;margin-bottom:10px;font-style:italic">Tap therapy to activate · fill in drug, frequency, and document when given</div>
-        ${(()=>{
-          const freqOpts=['q1h','q2h','q4h','q6h','q8h','q12h','BID','TID','QID','PRN'];
-          const saved=(d.therapies||'').split('|').filter(Boolean);
-          const savedMap={};
-          saved.forEach(s=>{const[k,...rest]=s.split(':');savedMap[k]=rest.join(':');});
-          let details={};
-          try{details=JSON.parse(d.therapyDetails||'{}');}catch(e){}
-
-          // Config per therapy: label, drug placeholder, response style
-          const thConfig={
-            neb:  {label:'Neb 1',   drugPh:'e.g. Duoneb, Albuterol',   respStyle:'standard'},
-            neb2: {label:'Neb 2',   drugPh:'e.g. Pulmicort, Mucomyst', respStyle:'standard'},
-            mdi:  {label:'MDI 1',   drugPh:'e.g. Symbicort, Spiriva',  respStyle:'standard'},
-            mdi2: {label:'MDI 2',   drugPh:'e.g. Atrovent, Flovent',   respStyle:'standard'},
-            is:   {label:'IS',      drugPh:'Volume goal e.g. 1500 mL', respStyle:'goal'},
-            flutter:{label:'Flutter',drugPh:'e.g. Acapella, Flutter',  respStyle:'goal'},
-            cpt:  {label:'CPT/Vest',drugPh:'Duration e.g. 20 min',     respStyle:'goal'},
-          };
-          const respLabels={standard:['imp','↑ Improved','unc','→ Unchanged','wor','↓ Worse'],
-                            goal:    ['imp','✓ Goal met','unc','~ Partial','wor','✗ Unable']};
-
-          function thBtn(key){
-            const cfg=thConfig[key];
-            const active=savedMap.hasOwnProperty(key);
-            const freq=savedMap[key]||'';
-            const det=details[key]||{};
-            const rl=respLabels[cfg.respStyle];
-            const badgeParts=[];
-            if(det.drug)badgeParts.push(det.drug);
-            if(det.refused)badgeParts.push('🚫 '+det.refused);
-            else if(det.lastGiven){
-              badgeParts.push(det.lastGiven);
-              if(det.response){const rm={imp:'↑',unc:'→',wor:'↓'};badgeParts.push(rm[det.response]||'');}
-            }
-            const badge=badgeParts.join(' · ');
-            const refActive=!!det.refused;
-            return `
-            <div style="margin-bottom:10px;border:1px solid ${active?'#c8dfc8':'#e5e5e2'};border-radius:8px;padding:8px 10px;background:${active?'#f4fbf4':'#fafafa'}">
-              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <button type="button" id="th-btn-${p.id}-${key}" onclick="toggleTherapy(${p.id},'${key}',this)"
-                  data-active="${active?'1':'0'}" style="padding:4px 12px;font-size:12px;border-radius:14px;border:1px solid ${active?'#2d6129':'#ccc'};background:${active?'#2d6129':'#fff'};color:${active?'#fff':'#555'};cursor:pointer;font-weight:${active?'700':'400'};white-space:nowrap">${cfg.label}</button>
-                <select id="th-freq-${p.id}-${key}" onchange="saveTherapies(${p.id})"
-                  style="display:${active?'inline-block':'none'};font-size:11px;padding:3px 6px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#333;height:28px">
-                  <option value="">freq</option>
-                  ${freqOpts.map(f=>`<option value="${f}"${freq===f?' selected':''}>${f}</option>`).join('')}
-                </select>
-                <span id="th-badge-${p.id}-${key}" style="font-size:10px;color:#2d6129;font-weight:600;display:${badge?'inline':'none'}">${badge}</span>
-              </div>
-              <div id="th-detail-${p.id}-${key}" style="display:${active?'block':'none'};margin-top:8px;padding-top:8px;border-top:1px solid #e0ede0">
-                <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap">
-                  <input type="text" id="th-drug-${p.id}-${key}" value="${det.drug||''}" placeholder="${cfg.drugPh}"
-                    oninput="thSaveDetail(${p.id},'${key}','drug',this.value)"
-                    style="flex:1;min-width:120px;font-size:11px;padding:4px 8px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#333;height:28px">
-                </div>
-                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-                  <button type="button" onclick="thGivenNow(${p.id},'${key}')"
-                    style="font-size:11px;padding:3px 10px;border-radius:14px;border:1px solid #1a4a8a;background:#e8f0fe;color:#1a4a8a;cursor:pointer;white-space:nowrap;font-weight:600">⏱ Given now</button>
-                  <input type="time" id="th-ts-${p.id}-${key}" value="${det.lastGiven||''}"
-                    onchange="thSaveDetail(${p.id},'${key}','lastGiven',this.value)"
-                    style="font-size:11px;padding:3px 6px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#333;height:28px">
-                  <span style="font-size:10px;color:#aaa">Response:</span>
-                  ${[[rl[0],rl[1]],[rl[2],rl[3]],[rl[4],rl[5]]].map(([rv,rl2])=>`
-                  <button type="button" id="th-resp-${p.id}-${key}-${rv}" onclick="thSetResponse(${p.id},'${key}','${rv}',this)"
-                    style="font-size:11px;padding:3px 8px;border-radius:14px;border:1px solid #ccc;background:#fff;color:#555;cursor:pointer;white-space:nowrap;font-weight:${det.response===rv?'700':'400'};opacity:${det.response&&det.response!==rv?'0.45':'1'}">${rl2}</button>`).join('')}
-                  <button type="button" id="th-ref-${p.id}-${key}" onclick="thSetRefused(${p.id},'${key}',document.getElementById('th-refsel-${p.id}-${key}').value||'Refused')"
-                    style="font-size:11px;padding:3px 8px;border-radius:14px;border:1px solid ${refActive?'#f0a0a0':'#ddd'};background:${refActive?'#fdecea':'#fff'};color:${refActive?'#8a2020':'#888'};cursor:pointer;white-space:nowrap">🚫</button>
-                  <select id="th-refsel-${p.id}-${key}" style="font-size:11px;padding:3px 4px;border-radius:6px;border:1px solid #ddd;background:#fff;color:#888;height:28px;max-width:90px">
-                    <option value="Refused">Refused</option>
-                    <option value="Unavailable">Unavailable</option>
-                    <option value="In imaging">In imaging</option>
-                    <option value="On hold">On hold</option>
-                    <option value="Sleeping">Sleeping</option>
-                  </select>
-                </div>
-              </div>
-            </div>`;
-          }
-
-          // PRN row with timestamp + response
-          const prnVal=savedMap['prn']||'';
-          const prnDet=details['prn']||{};
-          const prnRefActive=!!prnDet.refused;
-          const prnBadgeParts=[];
-          if(prnDet.lastGiven){prnBadgeParts.push('Last: '+prnDet.lastGiven);if(prnDet.response){const rm={imp:'↑',unc:'→',wor:'↓'};prnBadgeParts.push(rm[prnDet.response]||'');}}
-          if(prnDet.refused)prnBadgeParts.push('🚫 '+prnDet.refused);
-          const prnBadge=prnBadgeParts.join(' · ');
-          const prnRow=`
-          <div style="margin-bottom:10px;border:1px solid ${prnVal?'#f0c060':'#e5e5e2'};border-radius:8px;padding:8px 10px;background:${prnVal?'#fffdf5':'#fafafa'}">
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">
-              <span style="padding:3px 10px;font-size:12px;border-radius:14px;border:1px solid #b06000;background:#fef6e4;color:#7a5200;font-weight:700;white-space:nowrap">PRN</span>
-              <input type="text" id="th-prn-${p.id}" value="${prnVal}" placeholder="Drug + instructions e.g. Duoneb PRN q4h min"
-                onchange="saveTherapies(${p.id})"
-                style="flex:1;min-width:140px;font-size:11px;padding:4px 8px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#333;height:28px">
-              <span style="font-size:10px;color:#7a5200;font-weight:600">${prnBadge}</span>
-            </div>
-            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-              <button type="button" onclick="thGivenNow(${p.id},'prn')"
-                style="font-size:11px;padding:3px 10px;border-radius:14px;border:1px solid #1a4a8a;background:#e8f0fe;color:#1a4a8a;cursor:pointer;white-space:nowrap;font-weight:600">⏱ Given now</button>
-              <input type="time" id="th-ts-${p.id}-prn" value="${prnDet.lastGiven||''}"
-                onchange="thSaveDetail(${p.id},'prn','lastGiven',this.value)"
-                style="font-size:11px;padding:3px 6px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#333;height:28px">
-              <span style="font-size:10px;color:#aaa">Response:</span>
-              ${[['imp','↑ Improved'],['unc','→ Unchanged'],['wor','↓ Worse']].map(([rv,rl2])=>`
-              <button type="button" id="th-resp-${p.id}-prn-${rv}" onclick="thSetResponse(${p.id},'prn','${rv}',this)"
-                style="font-size:11px;padding:3px 8px;border-radius:14px;border:1px solid #ccc;background:#fff;color:#555;cursor:pointer;white-space:nowrap;font-weight:${prnDet.response===rv?'700':'400'};opacity:${prnDet.response&&prnDet.response!==rv?'0.45':'1'}">${rl2}</button>`).join('')}
-              <button type="button" id="th-ref-${p.id}-prn" onclick="thSetRefused(${p.id},'prn',document.getElementById('th-refsel-${p.id}-prn').value||'Refused')"
-                style="font-size:11px;padding:3px 8px;border-radius:14px;border:1px solid ${prnRefActive?'#f0a0a0':'#ddd'};background:${prnRefActive?'#fdecea':'#fff'};color:${prnRefActive?'#8a2020':'#888'};cursor:pointer;white-space:nowrap">🚫</button>
-              <select id="th-refsel-${p.id}-prn" style="font-size:11px;padding:3px 4px;border-radius:6px;border:1px solid #ddd;background:#fff;color:#888;height:28px;max-width:90px">
-                <option value="Refused">Refused</option>
-                <option value="Unavailable">Unavailable</option>
-                <option value="In imaging">In imaging</option>
-                <option value="On hold">On hold</option>
-                <option value="Sleeping">Sleeping</option>
-              </select>
-            </div>
-          </div>`;
-
-          return ['neb','neb2','mdi','mdi2','is','flutter','cpt'].map(k=>thBtn(k)).join('')+prnRow;
-        })()}
-        <input type="hidden" id="p${p.id}-therapies" value="${d.therapies||''}">
-        <input type="hidden" id="p${p.id}-therapyDetails" value="${d.therapyDetails||'{}'}">
-        </div><!-- end therapy-body -->
-      </div><!-- end Respiratory Therapy section -->
-
+      <!-- IMAGES for simple O2/HFNC patients (vent patients get images inside settings panel) -->
       <!-- IMAGES for simple O2/HFNC patients (vent patients get images inside settings panel) -->
       ${(!isVent&&!isNIV&&!isTrach)?`
       <div class="img-section">
@@ -3439,7 +3377,6 @@ function buildHandoffText(){
     'crackles-right':'Crackles R','wheeze-exp':'Wheeze (exp)',
     'wheeze-insp':'Wheeze (insp)','rhonchi':'Rhonchi','stridor':'Stridor',
     'absent-left':'Absent L','absent-right':'Absent R','pleural-rub':'Pleural rub'};
-  const thLabels={neb:'Neb 1',neb2:'Neb 2',mdi:'MDI 1',mdi2:'MDI 2',is:'IS',flutter:'Flutter',cpt:'CPT/Vest'};
 
   patients.forEach((p,i)=>{
     const d=p.data;
@@ -3526,6 +3463,15 @@ function buildHandoffText(){
         if(d.noResponse)noParts.push(d.noResponse);
         txt+=`   iNO: ${noParts.length?noParts.join(' | '):'In use'}\n`;
       }
+      // Active drips
+      try{
+        const drips=JSON.parse(d.activeDrips||'[]');
+        const dripLines=drips.filter(dr=>dr.drug).map(dr=>{
+          const name=dr.drug==='__custom__'?(dr.custom||'Custom drip'):dr.drug;
+          return dr.rate?`${name} @ ${dr.rate}`:name;
+        });
+        if(dripLines.length)txt+=`   Drips: ${dripLines.join(' | ')}\n`;
+      }catch(e){}
     }
     if(isBipapCpap&&(d.ipap||d.epap)){
       txt+=`   Settings: IPAP ${d.ipap||'?'} / EPAP ${d.epap||'?'} cmH\u2082O`;
@@ -3617,28 +3563,6 @@ function buildHandoffText(){
     // CXR
     if(d.cxr)txt+=`   CXR: ${d.cxr}\n`;
 
-    // Therapies
-    if(d.therapies){
-      let thDetails={};
-      try{thDetails=JSON.parse(d.therapyDetails||'{}');}catch(e){}
-      const respMap={imp:'↑',unc:'→',wor:'↓'};
-      const parts=d.therapies.split('|').filter(Boolean).map(entry=>{
-        const [k,...rest]=entry.split(':');
-        const freq=rest.join(':');
-        const det=thDetails[k]||{};
-        let str=k==='prn'?'PRN':(thLabels[k]||k);
-        if(freq)str+=` ${freq}`;
-        if(det.drug)str+=` — ${det.drug}`;
-        if(det.refused)str+=` [🚫 ${det.refused}]`;
-        else if(det.lastGiven){
-          str+=` · Last: ${det.lastGiven}`;
-          if(det.response)str+=` ${respMap[det.response]||''}`;
-        }
-        return str;
-      });
-      if(parts.length)txt+=`   Tx:\n${parts.map(p=>`     • ${p}`).join('\n')}\n`;
-    }
-
     // Clinical note
     if(d.clinicalNote)txt+=`   \u201c${d.clinicalNote}\u201d\n`;
 
@@ -3647,7 +3571,7 @@ function buildHandoffText(){
 
     txt+='\n';
   });
-  txt+=`${'─'.repeat(36)}\nRTLine v1.1 — No PHI. Room numbers only.`;
+  txt+=`${'─'.repeat(36)}\nRTLine v1.2 — No PHI. Room numbers only.`;
   return txt;
 }
 
@@ -3730,7 +3654,7 @@ function exportSession(){
     if(ic)txt+=`  Images: ${ic} captured (view in app)\n`;
     txt+='\n';
   });
-  txt+='-'.repeat(40)+'\nRTLine v1.1 — Reference only. No PHI.\n';
+  txt+='-'.repeat(40)+'\nRTLine v1.2 — Reference only. No PHI.\n';
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));
   a.download='RTLine_'+new Date().toISOString().slice(0,10)+'.txt';
@@ -4345,6 +4269,455 @@ function showAbout(){document.getElementById('about-overlay').style.display='fle
 function closeAbout(e){
   if(e&&e.target!==document.getElementById('about-overlay'))return;
   document.getElementById('about-overlay').style.display='none';
+}
+
+// ── ACTIVE DRIPS ─────────────────────────────────────────────
+function getDrips(id){
+  const p=patients.find(x=>x.id===id);
+  if(!p)return[];
+  try{return JSON.parse(p.data.activeDrips||'[]');}catch(e){return[];}
+}
+function saveDripsData(id,drips){
+  const p=patients.find(x=>x.id===id);
+  if(!p)return;
+  p.data.activeDrips=JSON.stringify(drips);
+  saveSession();
+}
+function toggleDrips(id){
+  const p=patients.find(x=>x.id===id);
+  if(!p)return;
+  const isOpen=p.data.dripsOpen==='true';
+  p.data.dripsOpen=String(!isOpen);
+  saveSession();
+  const panel=document.getElementById('drips-panel-'+id);
+  const chev=document.getElementById('drips-chev-'+id);
+  if(panel)panel.style.display=isOpen?'none':'block';
+  if(chev)chev.style.transform=isOpen?'rotate(-90deg)':'rotate(0deg)';
+}
+function addDrip(id){
+  const drips=getDrips(id);
+  drips.push({drug:'',rate:'',custom:''});
+  saveDripsData(id,drips);
+  renderPatients();
+}
+function saveDrip(id,idx,field,val){
+  const drips=getDrips(id);
+  if(!drips[idx])return;
+  drips[idx][field]=val;
+  // if switching away from custom, clear custom text
+  if(field==='drug'&&val!=='__custom__')drips[idx].custom='';
+  saveDripsData(id,drips);
+  // only re-render if drug changed (to show/hide custom input), not for rate
+  if(field==='drug')renderPatients();
+}
+function removeDrip(id,idx){
+  const drips=getDrips(id);
+  drips.splice(idx,1);
+  saveDripsData(id,drips);
+  renderPatients();
+}
+
+// ── SWIPE TO DELETE ───────────────────────────────────────────
+function initSwipe(cardEl,patientId){
+  let startX=0,startY=0,currentX=0,swiping=false,confirmed=false;
+  const THRESHOLD=80; // px to reveal delete button
+  const RATIO=1.5;    // must be more horizontal than vertical
+
+  let inner=cardEl.querySelector('.card-header');
+  if(!inner)return;
+
+  // inject delete reveal layer if not already present
+  if(!cardEl.querySelector('.swipe-delete-btn')){
+    const del=document.createElement('div');
+    del.className='swipe-delete-btn';
+    del.innerHTML='&#128465; Delete';
+    del.style.cssText='position:absolute;top:0;right:0;bottom:0;width:80px;background:#d93025;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border-radius:0 12px 12px 0;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:2';
+    del.addEventListener('click',function(e){
+      e.stopPropagation();
+      removePatient(patientId);
+    });
+    cardEl.style.position='relative';
+    cardEl.style.overflow='hidden';
+    cardEl.appendChild(del);
+  }
+
+  const delBtn=cardEl.querySelector('.swipe-delete-btn');
+  const header=cardEl.querySelector('.card-header');
+
+  function reset(){
+    swiping=false;confirmed=false;currentX=0;
+    header.style.transform='';
+    header.style.transition='transform 0.2s ease';
+    delBtn.style.opacity='0';
+    delBtn.style.pointerEvents='none';
+    setTimeout(()=>header.style.transition='',220);
+  }
+
+  cardEl.addEventListener('touchstart',function(e){
+    startX=e.touches[0].clientX;
+    startY=e.touches[0].clientY;
+    swiping=true;confirmed=false;
+    header.style.transition='none';
+  },{passive:true});
+
+  cardEl.addEventListener('touchmove',function(e){
+    if(!swiping)return;
+    const dx=e.touches[0].clientX-startX;
+    const dy=Math.abs(e.touches[0].clientY-startY);
+    // only activate if clearly horizontal
+    if(Math.abs(dx)<10&&dy<10)return;
+    if(dy>Math.abs(dx)*RATIO){swiping=false;return;}
+    if(dx>0){reset();return;} // swipe right — ignore
+    currentX=Math.max(dx,-THRESHOLD-20);
+    header.style.transform=`translateX(${currentX}px)`;
+    const pct=Math.min(Math.abs(currentX)/THRESHOLD,1);
+    delBtn.style.opacity=String(pct);
+    delBtn.style.pointerEvents=pct>=1?'auto':'none';
+  },{passive:true});
+
+  cardEl.addEventListener('touchend',function(){
+    if(!swiping)return;
+    if(Math.abs(currentX)>=THRESHOLD){
+      // snap to reveal position, wait for tap
+      header.style.transition='transform 0.15s ease';
+      header.style.transform=`translateX(-${THRESHOLD}px)`;
+      delBtn.style.opacity='1';
+      delBtn.style.pointerEvents='auto';
+      // tap anywhere else on card resets
+      setTimeout(()=>{
+        function outsideReset(e){
+          if(!delBtn.contains(e.target)){reset();}
+          document.removeEventListener('touchstart',outsideReset);
+        }
+        document.addEventListener('touchstart',outsideReset,{passive:true});
+      },50);
+    } else {
+      reset();
+    }
+    swiping=false;
+  },{passive:true});
+}
+
+      reset();
+    }
+    swiping=false;
+  },{passive:true});
+}
+
+// ── ROUND SHEET ───────────────────────────────────────────────
+const RS_KEY='rtline_roundsheet_v1';
+let rsRows=[];
+let rsFilter='due';
+
+const RS_FREQ_LABELS={q4:'Q4',q6:'Q6',q8:'Q8',q12:'Q12',bid:'BID',tid:'TID',qid:'QID',prn:'PRN'};
+const RS_STATUS_CYCLE={'':'done','done':'refused','refused':'offunit','offunit':''};
+const RS_STATUS_DISPLAY={
+  '':        {label:'',          bg:'#fff',     color:'#1a1a1a', border:'#e5e5e2'},
+  'done':    {label:'✓ Done',    bg:'#eaf4e8',  color:'#2d6129', border:'#a8d8a0'},
+  'refused': {label:'✗ Refused', bg:'#fdecea',  color:'#8a2020', border:'#f0c0c0'},
+  'offunit': {label:'⊘ Off unit',bg:'#fef6e4',  color:'#7a5200', border:'#f0c060'},
+};
+
+function rsLoad(){
+  try{
+    const r=localStorage.getItem(RS_KEY);
+    if(r){const d=JSON.parse(r);rsRows=d.rows||[];rsLoadSchedule(d.schedule||{});}
+  }catch(e){rsRows=[];}
+}
+function rsSave(){
+  const schedule={
+    q4: document.getElementById('rs-anc-q4')?.value||'08:00',
+    q6: document.getElementById('rs-anc-q6')?.value||'11:00',
+    q8: document.getElementById('rs-anc-q8')?.value||'14:00',
+    bid2:document.getElementById('rs-anc-bid2')?.value||'20:00'
+  };
+  try{localStorage.setItem(RS_KEY,JSON.stringify({rows:rsRows,schedule}));}catch(e){}
+}
+function rsLoadSchedule(s){
+  const f=(id,val)=>{const el=document.getElementById(id);if(el&&val)el.value=val;};
+  f('rs-anc-q4',s.q4);f('rs-anc-q6',s.q6);f('rs-anc-q8',s.q8);f('rs-anc-bid2',s.bid2);
+}
+function rsScheduleChanged(){rsSave();rsRender();}
+
+function rsBuildSlots(anchor,intervalHours){
+  const [ah,am]=anchor.split(':').map(Number);
+  const slots=[];
+  for(let i=0;i<Math.round(24/intervalHours);i++){
+    let h=(ah+i*intervalHours)%24;
+    slots.push(Math.round(h)*60+am);
+  }
+  return slots;
+}
+
+function rsGetSchedule(){
+  const q4=document.getElementById('rs-anc-q4')?.value||'08:00';
+  const q6=document.getElementById('rs-anc-q6')?.value||'11:00';
+  const q8=document.getElementById('rs-anc-q8')?.value||'14:00';
+  const bid2=document.getElementById('rs-anc-bid2')?.value||'20:00';
+  const [q4h,q4m]=q4.split(':').map(Number);
+  const [b2h,b2m]=bid2.split(':').map(Number);
+  return {
+    q4:  rsBuildSlots(q4,4),
+    q6:  rsBuildSlots(q6,6),
+    q8:  rsBuildSlots(q8,8),
+    q12: rsBuildSlots(q4,12),
+    bid: [q4h*60+q4m, b2h*60+b2m],
+    tid: rsBuildSlots(q8,8),
+    qid: rsBuildSlots(q4,6),
+    prn: null,
+  };
+}
+
+function rsActiveSlot(){
+  const now=new Date();
+  const nowMin=now.getHours()*60+now.getMinutes();
+  const schedule=rsGetSchedule();
+  const allSlots=new Set();
+  ['q4','q6','q8','q12','bid','tid','qid'].forEach(f=>{
+    if(schedule[f])schedule[f].forEach(s=>allSlots.add(s));
+  });
+  let best=null,bestDist=Infinity;
+  allSlots.forEach(s=>{
+    let d=Math.abs(s-nowMin);
+    if(d>720)d=1440-d;
+    if(d<bestDist){bestDist=d;best=s;}
+  });
+  if(best===null)return null;
+  const h=Math.floor(best/60),m=best%60;
+  const label=`${String(h).padStart(2,'0')}${String(m).padStart(2,'0')}`;
+  return {slot:best,label,dist:bestDist};
+}
+
+function rsRowIsDue(row){
+  if(row.freq==='prn')return false;
+  const schedule=rsGetSchedule();
+  const slots=schedule[row.freq];
+  if(!slots)return false;
+  const active=rsActiveSlot();
+  if(!active)return false;
+  return slots.some(s=>{
+    let d=Math.abs(s-active.slot);
+    if(d>720)d=1440-d;
+    return d<5;
+  });
+}
+
+function rsAddRow(){
+  const room=document.getElementById('rs-new-room').value.trim();
+  const tx=document.getElementById('rs-new-tx').value.trim();
+  const freq=document.getElementById('rs-new-freq').value;
+  if(!room||!tx)return;
+  rsRows.push({id:Date.now(),room,tx,freq,status:''});
+  rsSave();
+  document.getElementById('rs-new-room').value='';
+  document.getElementById('rs-new-tx').value='';
+  document.getElementById('rs-new-room').focus();
+  rsRender();
+}
+
+function rsCycleStatus(id){
+  const row=rsRows.find(r=>r.id===id);
+  if(!row)return;
+  row.status=RS_STATUS_CYCLE[row.status]||'';
+  rsSave();
+  rsRender();
+}
+
+function rsDeleteRow(id){
+  rsRows=rsRows.filter(r=>r.id!==id);
+  rsSave();
+  rsRender();
+}
+
+function rsDueNow(){
+  rsFilter='due';
+  const db=document.getElementById('rs-due-btn');
+  const ab=document.getElementById('rs-all-btn');
+  if(db){db.style.background='#5a3fa0';db.style.color='#fff';}
+  if(ab){ab.style.background='#fff';ab.style.color='#5a3fa0';}
+  rsRender();
+}
+
+function rsShowAll(){
+  rsFilter='all';
+  const db=document.getElementById('rs-due-btn');
+  const ab=document.getElementById('rs-all-btn');
+  if(ab){ab.style.background='#5a3fa0';ab.style.color='#fff';}
+  if(db){db.style.background='#fff';db.style.color='#5a3fa0';}
+  rsRender();
+}
+
+function rsClearAll(){
+  if(!rsRows.length)return;
+  if(!confirm('Clear all Round Sheet entries?'))return;
+  rsRows=[];rsSave();rsRender();
+}
+
+function rsRender(){
+  const list=document.getElementById('rs-list');
+  const slotEl=document.getElementById('rs-slot-label');
+  if(!list)return;
+
+  const active=rsActiveSlot();
+  if(slotEl){
+    if(active){
+      const d=active.dist;
+      const dStr=d<2?'now':d<60?`${Math.round(d)} min away`:`${(d/60).toFixed(1)} hr away`;
+      slotEl.innerHTML=`Active slot: <strong>${active.label}</strong> &nbsp;·&nbsp; ${dStr}`;
+      slotEl.style.color=d<=30?'#2d6129':'#888';
+    } else {
+      slotEl.textContent='';
+    }
+  }
+
+  const visible=rsFilter==='all'?rsRows:rsRows.filter(r=>rsRowIsDue(r));
+
+  if(!rsRows.length){
+    list.innerHTML='<div style="padding:24px 0;text-align:center;color:#aaa;font-size:13px">No entries yet — add rooms below to build your pull list.</div>';
+    return;
+  }
+  if(!visible.length){
+    list.innerHTML='<div style="padding:24px 0;text-align:center;color:#aaa;font-size:13px">Nothing due in the current time window.<br><span style="font-size:12px">Tap <strong>All</strong> to see the full list.</span></div>';
+    return;
+  }
+
+  list.innerHTML=visible.map(row=>{
+    const s=RS_STATUS_DISPLAY[row.status||''];
+    const fLabel=RS_FREQ_LABELS[row.freq]||row.freq.toUpperCase();
+    return `<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid ${s.border};border-radius:8px;background:${s.bg};margin-bottom:6px;cursor:pointer;user-select:none;-webkit-user-select:none"
+      onclick="rsCycleStatus(${row.id})">
+      <div style="font-size:15px;font-weight:800;color:#1a1a1a;min-width:60px">${row.room}</div>
+      <div style="flex:1;font-size:13px;color:#333">${row.tx}</div>
+      <div style="font-size:11px;font-weight:700;color:#aaa;min-width:30px;text-align:center">${fLabel}</div>
+      <div style="font-size:11px;font-weight:700;color:${s.color||'#aaa'};min-width:68px;text-align:right">${s.label}</div>
+      <button onclick="event.stopPropagation();rsDeleteRow(${row.id})" style="background:none;border:none;font-size:15px;color:#ccc;cursor:pointer;padding:0 2px;line-height:1" title="Remove">&#10005;</button>
+    </div>`;
+  }).join('');
+}
+
+function surfCalc(){
+  var out=document.getElementById('surf-out');
+  var bw=parseFloat(document.getElementById('surf-bw').value);
+  var ga=document.getElementById('surf-ga').value.trim();
+  var drug=document.getElementById('surf-drug').value;
+  if(!out)return;
+  if(!drug||isNaN(bw)||bw<=0){out.innerHTML='';return;}
+
+  var drugs={
+    curosurf:{
+      name:'Poractant alfa (Curosurf)',
+      color:'#1a4a8a',
+      conc:80,
+      initDoseMgKg:200,
+      initMlKg:2.5,
+      repeatDoseMgKg:100,
+      repeatMlKg:1.25,
+      maxRepeats:2,
+      repeatInterval:'≥ 12 hours after prior dose',
+      repeatCriteria:'Still intubated and FiO₂ > 0.30',
+      vials:[{vol:1.5,mg:120},{vol:3,mg:240}],
+      vialStr:'1.5 mL (120 mg) · 3 mL (240 mg)'
+    },
+    survanta:{
+      name:'Beractant (Survanta)',
+      color:'#2d6129',
+      conc:25,
+      initDoseMgKg:100,
+      initMlKg:4,
+      repeatDoseMgKg:100,
+      repeatMlKg:4,
+      maxRepeats:3,
+      repeatInterval:'No sooner than every 6 hours',
+      repeatCriteria:'Still intubated and requiring supplemental O₂ · max 4 total doses in 48 hrs',
+      vials:[{vol:4,mg:100},{vol:8,mg:200}],
+      vialStr:'4 mL (100 mg) · 8 mL (200 mg)'
+    },
+    infasurf:{
+      name:'Calfactant (Infasurf)',
+      color:'#8a6020',
+      conc:35,
+      initDoseMgKg:105,
+      initMlKg:3,
+      repeatDoseMgKg:105,
+      repeatMlKg:3,
+      maxRepeats:2,
+      repeatInterval:'Every 12 hours',
+      repeatCriteria:'Still intubated and requiring O₂ · max 3 total doses',
+      vials:[{vol:3,mg:105},{vol:6,mg:210}],
+      vialStr:'3 mL (105 mg) · 6 mL (210 mg)'
+    }
+  };
+
+  var d=drugs[drug];
+  var initMg=d.initDoseMgKg*bw;
+  var initMl=d.initMlKg*bw;
+  var repMg=d.repeatDoseMgKg*bw;
+  var repMl=d.repeatMlKg*bw;
+
+  function vialCalc(totalMl,vials){
+    // Greedy: use large vials first, minimize waste
+    var best=null;
+    var maxLarge=Math.ceil(totalMl/vials[1].vol);
+    for(var l=maxLarge;l>=0;l--){
+      var rem=totalMl-(l*vials[1].vol);
+      if(rem<-0.001)continue;
+      var s=rem<=0?0:Math.ceil(rem/vials[0].vol);
+      var total_vol=l*vials[1].vol+s*vials[0].vol;
+      var waste=parseFloat((total_vol-totalMl).toFixed(3));
+      if(!best||waste<best.waste||(waste===best.waste&&(l+s)<(best.large+best.small))){
+        best={large:l,small:s,waste:waste,total_vol:total_vol};
+      }
+    }
+    return best||{large:0,small:Math.ceil(totalMl/vials[0].vol),waste:0,total_vol:0};
+  }
+
+  var iv=vialCalc(initMl,d.vials);
+  var rv=vialCalc(repMl,d.vials);
+
+  function vialStr(v,vials){
+    var parts=[];
+    if(v.large>0)parts.push(v.large+' &times; '+vials[1].vol+' mL vial'+(v.large>1?'s':''));
+    if(v.small>0)parts.push(v.small+' &times; '+vials[0].vol+' mL vial'+(v.small>1?'s':''));
+    var s=parts.join(' + ');
+    if(v.waste>0.01)s+=' <span style="color:#888;font-size:11px">('+v.waste.toFixed(2)+' mL waste)</span>';
+    return s;
+  }
+
+  var gaLine=ga&&!isNaN(parseInt(ga))?'<div style="font-size:12px;color:#888;margin-bottom:2px">Gestational age: <strong>'+parseInt(ga)+' weeks</strong></div>':'';
+
+  var html='<div style="border:1px solid '+d.color+';border-left:4px solid '+d.color+';border-radius:10px;padding:16px;margin-top:8px;background:#fafcff">';
+  html+='<div style="font-size:14px;font-weight:700;color:'+d.color+';margin-bottom:10px">'+d.name+'</div>';
+  html+=gaLine;
+  html+='<div style="font-size:12px;color:#666;margin-bottom:12px">Birth weight: <strong>'+bw.toFixed(2)+' kg</strong> &nbsp;·&nbsp; Conc: '+d.conc+' mg/mL</div>';
+
+  // INITIAL DOSE
+  html+='<div style="background:#f0f5ff;border-radius:8px;padding:12px;margin-bottom:10px">';
+  html+='<div style="font-size:11px;font-weight:700;color:#1a4a8a;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">&#128200; Initial dose</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">';
+  html+='<div style="background:#fff;border-radius:6px;padding:10px;text-align:center"><div style="font-size:11px;color:#888;margin-bottom:2px">Dose</div><div style="font-size:18px;font-weight:800;color:#1a1a1a">'+initMg.toFixed(0)+' <span style="font-size:12px;font-weight:500">mg</span></div><div style="font-size:11px;color:#888">'+d.initDoseMgKg+' mg/kg</div></div>';
+  html+='<div style="background:#fff;border-radius:6px;padding:10px;text-align:center"><div style="font-size:11px;color:#888;margin-bottom:2px">Volume</div><div style="font-size:18px;font-weight:800;color:'+d.color+'">'+initMl.toFixed(2)+' <span style="font-size:12px;font-weight:500">mL</span></div><div style="font-size:11px;color:#888">'+d.initMlKg+' mL/kg</div></div>';
+  html+='</div>';
+  html+='<div style="font-size:13px;color:#444"><strong>Vials needed:</strong> '+vialStr(iv,d.vials)+'</div>';
+  html+='</div>';
+
+  // REPEAT DOSE
+  html+='<div style="background:#f0fff4;border-radius:8px;padding:12px;margin-bottom:10px">';
+  html+='<div style="font-size:11px;font-weight:700;color:#2d6129;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">&#8635; Repeat dose (if needed)</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">';
+  html+='<div style="background:#fff;border-radius:6px;padding:10px;text-align:center"><div style="font-size:11px;color:#888;margin-bottom:2px">Dose</div><div style="font-size:18px;font-weight:800;color:#1a1a1a">'+repMg.toFixed(0)+' <span style="font-size:12px;font-weight:500">mg</span></div><div style="font-size:11px;color:#888">'+d.repeatDoseMgKg+' mg/kg</div></div>';
+  html+='<div style="background:#fff;border-radius:6px;padding:10px;text-align:center"><div style="font-size:11px;color:#888;margin-bottom:2px">Volume</div><div style="font-size:18px;font-weight:800;color:'+d.color+'">'+repMl.toFixed(2)+' <span style="font-size:12px;font-weight:500">mL</span></div><div style="font-size:11px;color:#888">'+d.repeatMlKg+' mL/kg</div></div>';
+  html+='</div>';
+  html+='<div style="font-size:13px;color:#444;margin-bottom:6px"><strong>Vials needed:</strong> '+vialStr(rv,d.vials)+'</div>';
+  html+='<div style="font-size:12px;color:#555;margin-bottom:3px">&#128337; <strong>Timing:</strong> '+d.repeatInterval+'</div>';
+  html+='<div style="font-size:12px;color:#555;margin-bottom:3px">&#10003; <strong>Criteria:</strong> '+d.repeatCriteria+'</div>';
+  html+='<div style="font-size:12px;color:#555">&#9632; <strong>Max additional doses:</strong> '+d.maxRepeats+'</div>';
+  html+='</div>';
+
+  // VIAL REFERENCE
+  html+='<div style="font-size:11px;color:#aaa;margin-top:4px">Available vial sizes: '+d.vialStr+'</div>';
+  html+='</div>';
+
+  out.innerHTML=html;
 }
 </script>
 </body>
