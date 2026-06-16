@@ -375,14 +375,6 @@ input::placeholder{color:#c8c8c8}
       </div>
 
       <div class="about-section">
-        <div class="about-section-title">&#9200; Round Sheet tab</div>
-        <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>Build your pull list</strong> — enter room number, treatment abbreviation, and frequency. Tap <em>＋ Add</em> or press Enter to append rows quickly.</div></div>
-        <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>Due Now filter</strong> — auto-detects the active time slot based on your facility schedule and shows only treatments currently due.</div></div>
-        <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>Tap to cycle status</strong> — tap any row to cycle: blank → ✓ Done → ✗ Refused → ⊘ Off unit → blank.</div></div>
-        <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>Facility schedule</strong> — tap ⚙ Schedule to set anchor times for Q4, Q6, Q8, and BID 2nd dose.</div></div>
-      </div>
-
-      <div class="about-section">
         <div class="about-section-title">&#128168; Ventilator tab</div>
         <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>Calculator</strong> — IBW, tidal volume range, driving pressure, and the full ARDSnet PEEP–FiO&#8322; table.</div></div>
         <div class="about-feature"><span class="about-icon">&#9646;</span><div><strong>APRV / bilevel</strong> — evaluates P-high, P-low, T-high, T-low with calculated rate and T-low guidance, plus a full clinical primer explaining what each parameter does and when to adjust it.</div></div>
@@ -469,7 +461,6 @@ input::placeholder{color:#c8c8c8}
   <!-- MAIN TABS -->
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('rounding',this)">&#128203; Rounding</button>
-    <button class="tab-btn" onclick="switchTab('roundsheet',this)">&#9200; Round Sheet</button>
     <button class="tab-btn" onclick="switchTab('vent',this)">&#128168; Ventilator</button>
     <button class="tab-btn" onclick="switchTab('niv',this)">&#128567; NIV/HFNC</button>
     <button class="tab-btn" onclick="switchTab('abg',this)">&#129704; ABG</button>
@@ -535,67 +526,6 @@ input::placeholder{color:#c8c8c8}
       <div class="empty-state-icon">&#129696;</div>
       <div class="empty-state-text">No rooms added yet.<br>Enter a room number above to begin rounding.</div>
     </div>
-  </div>
-
-  <!-- ROUND SHEET TAB -->
-  <div id="tab-roundsheet" class="tab-panel">
-
-    <!-- SCHEDULE SETTINGS BAR -->
-    <div id="rs-settings-bar" style="display:none;background:#f8f4ff;border:1px solid #d8cff0;border-radius:10px;padding:12px 14px;margin-bottom:14px">
-      <div style="font-size:11px;font-weight:700;color:#5a3fa0;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">&#9200; Facility schedule — anchor times</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-        <div><label style="font-size:11px;color:#666;display:block;margin-bottom:3px">Q4 anchor</label>
-          <input type="time" id="rs-anc-q4" value="08:00" onchange="rsScheduleChanged()" style="width:100%;font-size:13px;padding:5px 8px;border:1px solid #d8cff0;border-radius:6px"></div>
-        <div><label style="font-size:11px;color:#666;display:block;margin-bottom:3px">Q6 anchor</label>
-          <input type="time" id="rs-anc-q6" value="11:00" onchange="rsScheduleChanged()" style="width:100%;font-size:13px;padding:5px 8px;border:1px solid #d8cff0;border-radius:6px"></div>
-        <div><label style="font-size:11px;color:#666;display:block;margin-bottom:3px">Q8 / TID anchor</label>
-          <input type="time" id="rs-anc-q8" value="14:00" onchange="rsScheduleChanged()" style="width:100%;font-size:13px;padding:5px 8px;border:1px solid #d8cff0;border-radius:6px"></div>
-        <div><label style="font-size:11px;color:#666;display:block;margin-bottom:3px">BID 2nd dose</label>
-          <input type="time" id="rs-anc-bid2" value="20:00" onchange="rsScheduleChanged()" style="width:100%;font-size:13px;padding:5px 8px;border:1px solid #d8cff0;border-radius:6px"></div>
-      </div>
-      <button onclick="document.getElementById('rs-settings-bar').style.display='none'" style="width:100%;background:#5a3fa0;color:#fff;border:none;border-radius:6px;padding:7px;font-size:13px;font-weight:600;cursor:pointer">Done</button>
-    </div>
-
-    <!-- CONTROLS ROW -->
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-      <div style="font-size:14px;font-weight:700;color:#1a1a1a;flex:1">&#9200; Treatment Round Sheet</div>
-      <button onclick="rsDueNow()" id="rs-due-btn" style="padding:6px 14px;font-size:12px;font-weight:700;border-radius:20px;border:2px solid #5a3fa0;background:#5a3fa0;color:#fff;cursor:pointer;white-space:nowrap">Due Now</button>
-      <button onclick="rsShowAll()" id="rs-all-btn" style="padding:6px 14px;font-size:12px;font-weight:600;border-radius:20px;border:2px solid #5a3fa0;background:#fff;color:#5a3fa0;cursor:pointer;white-space:nowrap">All</button>
-      <button onclick="document.getElementById('rs-settings-bar').style.display=document.getElementById('rs-settings-bar').style.display==='none'?'block':'none'" style="padding:6px 10px;font-size:12px;border-radius:20px;border:1px solid #d8cff0;background:#f8f4ff;color:#5a3fa0;cursor:pointer;white-space:nowrap">&#9881; Schedule</button>
-    </div>
-
-    <!-- ACTIVE SLOT DISPLAY -->
-    <div id="rs-slot-label" style="font-size:12px;color:#888;margin-bottom:10px;min-height:18px"></div>
-
-    <!-- TREATMENT LIST -->
-    <div id="rs-list" style="margin-bottom:12px"></div>
-
-    <!-- ADD ROW -->
-    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 12px;background:#f8f4ff;border:1px dashed #b0a0e0;border-radius:8px">
-      <input type="text" id="rs-new-room" placeholder="Room" maxlength="8"
-        style="width:70px;font-size:13px;padding:6px 8px;border:1px solid #d8cff0;border-radius:6px;font-weight:700"
-        onkeydown="if(event.key==='Enter')rsAddRow()">
-      <input type="text" id="rs-new-tx" placeholder="Treatment (e.g. duo, alb, is)"
-        style="flex:1;min-width:130px;font-size:13px;padding:6px 8px;border:1px solid #d8cff0;border-radius:6px"
-        onkeydown="if(event.key==='Enter')rsAddRow()">
-      <select id="rs-new-freq" style="font-size:13px;padding:6px 8px;border:1px solid #d8cff0;border-radius:6px;background:#fff;color:#333">
-        <option value="q4">Q4</option>
-        <option value="q6">Q6</option>
-        <option value="q8">Q8</option>
-        <option value="q12">Q12</option>
-        <option value="bid">BID</option>
-        <option value="tid">TID</option>
-        <option value="qid">QID</option>
-        <option value="prn">PRN</option>
-      </select>
-      <button onclick="rsAddRow()" style="padding:6px 16px;font-size:13px;font-weight:700;border-radius:6px;border:none;background:#5a3fa0;color:#fff;cursor:pointer;white-space:nowrap">＋ Add</button>
-    </div>
-
-    <!-- CLEAR ALL -->
-    <div style="margin-top:10px;text-align:right">
-      <button onclick="rsClearAll()" style="background:none;border:none;font-size:11px;color:#ccc;cursor:pointer;text-decoration:underline">Clear all entries</button>
-    </div>
-
   </div>
 
   <!-- VENTILATOR TAB -->
@@ -1712,16 +1642,6 @@ input::placeholder{color:#c8c8c8}
           <span style="font-size:11px;color:#aaa">2026</span>
           <span style="font-size:10px;font-weight:700;background:#1a4a8a;color:#fff;padding:2px 7px;border-radius:10px">Current</span>
         </div>
-        <div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Round Sheet</div>
-        <ul style="font-size:13px;color:#444;line-height:1.8;margin:0 0 10px;padding-left:18px">
-          <li>New <strong>Round Sheet tab</strong> between Rounding and Ventilator</li>
-          <li>Room + treatment + frequency entry — fast keyboard-friendly input (Enter to add)</li>
-          <li>Due Now filter — auto-selects the closest active time slot within 90 minutes</li>
-          <li>Facility schedule — configurable anchor times for Q4, Q6, Q8, BID 2nd dose; persists for the session</li>
-          <li>Tap any row to cycle status: blank → ✓ Done → ✗ Refused → ⊘ Off unit</li>
-          <li>Frequencies supported: Q4, Q6, Q8, Q12, BID, TID, QID, PRN</li>
-          <li>Session-persistent — survives app close and reopening within the 14-hour window</li>
-        </ul>
         <div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Peds / Neonatal</div>
         <ul style="font-size:13px;color:#444;line-height:1.8;margin:0 0 10px;padding-left:18px">
           <li>Peds tab renamed to <strong>Peds/Neo</strong> with sub-tab navigation</li>
@@ -1927,8 +1847,6 @@ window.addEventListener('DOMContentLoaded',function(){
   loadSession();
   loadShift();
   renderPatients();
-  rsLoad();
-  rsRender();
   showPeepTable('low');
   showInstallBanner();
 });
@@ -4396,203 +4314,6 @@ function initSwipe(cardEl,patientId){
     }
     swiping=false;
   },{passive:true});
-}
-
-      reset();
-    }
-    swiping=false;
-  },{passive:true});
-}
-
-// ── ROUND SHEET ───────────────────────────────────────────────
-const RS_KEY='rtline_roundsheet_v1';
-let rsRows=[];
-let rsFilter='due';
-
-const RS_FREQ_LABELS={q4:'Q4',q6:'Q6',q8:'Q8',q12:'Q12',bid:'BID',tid:'TID',qid:'QID',prn:'PRN'};
-const RS_STATUS_CYCLE={'':'done','done':'refused','refused':'offunit','offunit':''};
-const RS_STATUS_DISPLAY={
-  '':        {label:'',          bg:'#fff',     color:'#1a1a1a', border:'#e5e5e2'},
-  'done':    {label:'✓ Done',    bg:'#eaf4e8',  color:'#2d6129', border:'#a8d8a0'},
-  'refused': {label:'✗ Refused', bg:'#fdecea',  color:'#8a2020', border:'#f0c0c0'},
-  'offunit': {label:'⊘ Off unit',bg:'#fef6e4',  color:'#7a5200', border:'#f0c060'},
-};
-
-function rsLoad(){
-  try{
-    const r=localStorage.getItem(RS_KEY);
-    if(r){const d=JSON.parse(r);rsRows=d.rows||[];rsLoadSchedule(d.schedule||{});}
-  }catch(e){rsRows=[];}
-}
-function rsSave(){
-  const schedule={
-    q4: document.getElementById('rs-anc-q4')?.value||'08:00',
-    q6: document.getElementById('rs-anc-q6')?.value||'11:00',
-    q8: document.getElementById('rs-anc-q8')?.value||'14:00',
-    bid2:document.getElementById('rs-anc-bid2')?.value||'20:00'
-  };
-  try{localStorage.setItem(RS_KEY,JSON.stringify({rows:rsRows,schedule}));}catch(e){}
-}
-function rsLoadSchedule(s){
-  const f=(id,val)=>{const el=document.getElementById(id);if(el&&val)el.value=val;};
-  f('rs-anc-q4',s.q4);f('rs-anc-q6',s.q6);f('rs-anc-q8',s.q8);f('rs-anc-bid2',s.bid2);
-}
-function rsScheduleChanged(){rsSave();rsRender();}
-
-function rsBuildSlots(anchor,intervalHours){
-  const [ah,am]=anchor.split(':').map(Number);
-  const slots=[];
-  for(let i=0;i<Math.round(24/intervalHours);i++){
-    let h=(ah+i*intervalHours)%24;
-    slots.push(Math.round(h)*60+am);
-  }
-  return slots;
-}
-
-function rsGetSchedule(){
-  const q4=document.getElementById('rs-anc-q4')?.value||'08:00';
-  const q6=document.getElementById('rs-anc-q6')?.value||'11:00';
-  const q8=document.getElementById('rs-anc-q8')?.value||'14:00';
-  const bid2=document.getElementById('rs-anc-bid2')?.value||'20:00';
-  const [q4h,q4m]=q4.split(':').map(Number);
-  const [b2h,b2m]=bid2.split(':').map(Number);
-  return {
-    q4:  rsBuildSlots(q4,4),
-    q6:  rsBuildSlots(q6,6),
-    q8:  rsBuildSlots(q8,8),
-    q12: rsBuildSlots(q4,12),
-    bid: [q4h*60+q4m, b2h*60+b2m],
-    tid: rsBuildSlots(q8,8),
-    qid: rsBuildSlots(q4,6),
-    prn: null,
-  };
-}
-
-function rsActiveSlot(){
-  const now=new Date();
-  const nowMin=now.getHours()*60+now.getMinutes();
-  const schedule=rsGetSchedule();
-  const allSlots=new Set();
-  ['q4','q6','q8','q12','bid','tid','qid'].forEach(f=>{
-    if(schedule[f])schedule[f].forEach(s=>allSlots.add(s));
-  });
-  let best=null,bestDist=Infinity;
-  allSlots.forEach(s=>{
-    let d=Math.abs(s-nowMin);
-    if(d>720)d=1440-d;
-    if(d<bestDist){bestDist=d;best=s;}
-  });
-  if(best===null)return null;
-  const h=Math.floor(best/60),m=best%60;
-  const label=`${String(h).padStart(2,'0')}${String(m).padStart(2,'0')}`;
-  return {slot:best,label,dist:bestDist};
-}
-
-function rsRowIsDue(row){
-  if(row.freq==='prn')return false;
-  const schedule=rsGetSchedule();
-  const slots=schedule[row.freq];
-  if(!slots)return false;
-  const active=rsActiveSlot();
-  if(!active)return false;
-  return slots.some(s=>{
-    let d=Math.abs(s-active.slot);
-    if(d>720)d=1440-d;
-    return d<5;
-  });
-}
-
-function rsAddRow(){
-  const room=document.getElementById('rs-new-room').value.trim();
-  const tx=document.getElementById('rs-new-tx').value.trim();
-  const freq=document.getElementById('rs-new-freq').value;
-  if(!room||!tx)return;
-  rsRows.push({id:Date.now(),room,tx,freq,status:''});
-  rsSave();
-  document.getElementById('rs-new-room').value='';
-  document.getElementById('rs-new-tx').value='';
-  document.getElementById('rs-new-room').focus();
-  rsRender();
-}
-
-function rsCycleStatus(id){
-  const row=rsRows.find(r=>r.id===id);
-  if(!row)return;
-  row.status=RS_STATUS_CYCLE[row.status]||'';
-  rsSave();
-  rsRender();
-}
-
-function rsDeleteRow(id){
-  rsRows=rsRows.filter(r=>r.id!==id);
-  rsSave();
-  rsRender();
-}
-
-function rsDueNow(){
-  rsFilter='due';
-  const db=document.getElementById('rs-due-btn');
-  const ab=document.getElementById('rs-all-btn');
-  if(db){db.style.background='#5a3fa0';db.style.color='#fff';}
-  if(ab){ab.style.background='#fff';ab.style.color='#5a3fa0';}
-  rsRender();
-}
-
-function rsShowAll(){
-  rsFilter='all';
-  const db=document.getElementById('rs-due-btn');
-  const ab=document.getElementById('rs-all-btn');
-  if(ab){ab.style.background='#5a3fa0';ab.style.color='#fff';}
-  if(db){db.style.background='#fff';db.style.color='#5a3fa0';}
-  rsRender();
-}
-
-function rsClearAll(){
-  if(!rsRows.length)return;
-  if(!confirm('Clear all Round Sheet entries?'))return;
-  rsRows=[];rsSave();rsRender();
-}
-
-function rsRender(){
-  const list=document.getElementById('rs-list');
-  const slotEl=document.getElementById('rs-slot-label');
-  if(!list)return;
-
-  const active=rsActiveSlot();
-  if(slotEl){
-    if(active){
-      const d=active.dist;
-      const dStr=d<2?'now':d<60?`${Math.round(d)} min away`:`${(d/60).toFixed(1)} hr away`;
-      slotEl.innerHTML=`Active slot: <strong>${active.label}</strong> &nbsp;·&nbsp; ${dStr}`;
-      slotEl.style.color=d<=30?'#2d6129':'#888';
-    } else {
-      slotEl.textContent='';
-    }
-  }
-
-  const visible=rsFilter==='all'?rsRows:rsRows.filter(r=>rsRowIsDue(r));
-
-  if(!rsRows.length){
-    list.innerHTML='<div style="padding:24px 0;text-align:center;color:#aaa;font-size:13px">No entries yet — add rooms below to build your pull list.</div>';
-    return;
-  }
-  if(!visible.length){
-    list.innerHTML='<div style="padding:24px 0;text-align:center;color:#aaa;font-size:13px">Nothing due in the current time window.<br><span style="font-size:12px">Tap <strong>All</strong> to see the full list.</span></div>';
-    return;
-  }
-
-  list.innerHTML=visible.map(row=>{
-    const s=RS_STATUS_DISPLAY[row.status||''];
-    const fLabel=RS_FREQ_LABELS[row.freq]||row.freq.toUpperCase();
-    return `<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid ${s.border};border-radius:8px;background:${s.bg};margin-bottom:6px;cursor:pointer;user-select:none;-webkit-user-select:none"
-      onclick="rsCycleStatus(${row.id})">
-      <div style="font-size:15px;font-weight:800;color:#1a1a1a;min-width:60px">${row.room}</div>
-      <div style="flex:1;font-size:13px;color:#333">${row.tx}</div>
-      <div style="font-size:11px;font-weight:700;color:#aaa;min-width:30px;text-align:center">${fLabel}</div>
-      <div style="font-size:11px;font-weight:700;color:${s.color||'#aaa'};min-width:68px;text-align:right">${s.label}</div>
-      <button onclick="event.stopPropagation();rsDeleteRow(${row.id})" style="background:none;border:none;font-size:15px;color:#ccc;cursor:pointer;padding:0 2px;line-height:1" title="Remove">&#10005;</button>
-    </div>`;
-  }).join('');
 }
 
 function surfCalc(){
