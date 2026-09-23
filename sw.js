@@ -1,6 +1,6 @@
 // RTLine Service Worker
 // ── UPDATE THIS VERSION STRING WITH EVERY RELEASE ──
-const CACHE_NAME = 'rtline-cache-v1.1';
+const CACHE_NAME = 'rtline-cache-v1.2-qr-direct';
 
 const ASSETS = [
   './',
